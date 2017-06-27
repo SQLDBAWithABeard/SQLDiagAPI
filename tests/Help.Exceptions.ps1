@@ -1,2 +1,2 @@
-$global:FunctionHelpTestExceptions = @()
+$script:FunctionHelpTestExceptions = @()
 
