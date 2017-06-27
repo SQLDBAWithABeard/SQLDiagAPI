@@ -1,6 +1,8 @@
 $projectRoot = Resolve-Path "$PSScriptRoot\.."
 $script:ModuleName = 'SQLDiagAPI'
-
-Describe "Basic function feature tests" -Tags Build {
+# Removes all versions of the module from the session before importing
+Get-Module $ModuleName | Remove-Module
+Import-Module $ModuleBase\$ModuleName.psd1 -PassThru -ErrorAction Stop
+Describe "Get-" -Tags Build {
 
 }
