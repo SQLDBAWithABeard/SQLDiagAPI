@@ -7,39 +7,44 @@ if ((Split-Path $ModuleBase -Leaf) -eq 'Tests') {
     $ModuleBase = Split-Path $ModuleBase -Parent
 }
 
-Import-Module $ModuleBase\$ModuleName.psd1 -PassThru -ErrorAction Stop | Out-Null
-Describe "Get-SQLDiagRecommendations" -Tags Build , Unit{
-    Context "Requirements" {
-        Mock Get-ChildItem {}
-        Mock Write-Warning {"Warning"}
-        It "Should throw a warning if there is no API Key Environment Variable"{
-            Get-SQLDiagRecommendations -ErrorAction SilentlyContinue | Should Be "Warning"
-        }
-        It 'Checks the Mock was called for Get-ChildItem' {
-            $assertMockParams = @{
-                'CommandName' = 'Get-ChildItem'
-                'Times'       = 1
-                'Exactly'     = $true
+Import-Module $ModuleBase\$ModuleName.psd1 -ErrorAction Stop #| Out-Null
+InModuleScope -ModuleName SQLDiagAPI {
+    Describe "Get-SQLDiagRecommendations" -Tags Build , Unit {
+
+        Context "Requirements" {
+            BeforeAll {
+                Mock Test-Path {$false}
+                Mock Write-Warning {"Warning"}
             }
-            Assert-MockCalled @assertMockParams 
-        }
-        It 'Checks the Mock was called for Write-Warning' {
-            $assertMockParams = @{
-                'CommandName' = 'Write-Warning'
-                'Times'       = 1
-                'Exactly'     = $true
+            It "Should throw a warning if there is no API Key XML File" {
+                Get-SQLDiagRecommendations -ErrorAction SilentlyContinue -WarningAction SilentlyContinue | Should Be "Warning"
             }
-            Assert-MockCalled @assertMockParams 
+            It 'Checks the Mock was called for Test-Path' {
+                $assertMockParams = @{
+                    'CommandName' = 'Test-Path'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Write-Warning' {
+                $assertMockParams = @{
+                    'CommandName' = 'Write-Warning'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+
         }
+        Context "Input" {
 
-    }
-    Context "Input" {
+        }
+        Context "Execution" {
 
-    }
-    Context "Execution" {
-
-    }
-    Context "Output" {
+        }
+        Context "Output" {
         
+        }
     }
 }
