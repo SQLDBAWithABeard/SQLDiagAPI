@@ -20,5 +20,8 @@ function Get-SQLDiagRecommendations {
         break
     }
 
+    $apiUrl = "https://ecsapi.azure-api.net/SQLServer/recommendations/latestcus/" + $MachineGUID + "?api-version=2017-06-01"
+    $headers = @{ "Ocp-Apim-Subscription-Key" = $apiKey }
 
+    Invoke-RestMethod -Method Get -Uri $apiUrl -Headers $headers -ContentType "application/json"  -ErrorAction Stop
 }
