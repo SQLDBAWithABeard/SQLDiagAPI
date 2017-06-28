@@ -12,5 +12,13 @@ function Get-SQLDiagRecommendations {
         }
     }
 
+    $MachineGUID = Get-MachineGUID
+
+    if($MachineGUID.length -eq 0)
+    {
+        Write-Warning "Failed to get Machine GUID from HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\"
+        break
+    }
+
 
 }
