@@ -10,7 +10,7 @@ Please follow the instructions here [install](install.md)
 
 ### Get-SQLRecommendations
 
-This function connects to the SQL Server Diagnostic Recommendations API and returns a PSCustomObject 
+[This function](functions\Get-SQLRecommendations.ps1) connects to the SQL Server Diagnostic Recommendations API and returns a PSCustomObject 
 with information about the latest Cumulative Updates for various SQL Server Versions. 
 Details here https://ecsapi.portal.azure-api.net/
 
