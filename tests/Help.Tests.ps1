@@ -13,7 +13,7 @@
 #>
 
 $ModuleBase = Split-Path -Parent $MyInvocation.MyCommand.Path
-. "$ModuleBase\Help.Exceptions.ps1"
+$FunctionHelpTestExceptions = Get-Content -Path "$ModuleBase\Help.Exceptions.ps1"
 
 # For tests in .\Tests subdirectory
 if ((Split-Path $ModuleBase -Leaf) -eq 'Tests') {
@@ -47,7 +47,7 @@ foreach ($command in $commands) {
     $commandName = $command.Name
     
     # Skip all functions that are on the exclusions list
-    if ($script:FunctionHelpTestExceptions -contains $commandName) { continue }
+    if ($FunctionHelpTestExceptions -contains $commandName) { continue }
     
     # The module-qualified command fails on Microsoft.PowerShell.Archive cmdlets
     $Help = Get-Help $commandName -ErrorAction SilentlyContinue
