@@ -8,6 +8,6 @@ if ((Split-Path $ModuleBase -Leaf) -eq 'Tests') {
 }
 
 Import-Module $ModuleBase\$ModuleName.psd1 -PassThru -ErrorAction Stop | Out-Null
-Describe "Regression tests" -Tag Build {
+Describe "Regression tests" -Tag Build, Regression {
 
 }
