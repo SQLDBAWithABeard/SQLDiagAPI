@@ -206,6 +206,14 @@ InModuleScope -ModuleName SQLDiagAPI {
                 $Results = (Get-Content $PSScriptRoot\json\Features.JSON) -join "`n" | ConvertFrom-Json
                 Compare-Object (Get-SQLDiagFeature) $results | Should BeNullOrEmpty
             }
+            It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-SQLDiagRecommendations'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
         }
     }
 }
