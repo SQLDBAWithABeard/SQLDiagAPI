@@ -110,7 +110,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 29
+                    'Times'       = 48
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
@@ -124,6 +124,9 @@ InModuleScope -ModuleName SQLDiagAPI {
             Mock Get-SQLDiagRecommendations {$Recommendations}
         }
         Context "Input" {
+            It "Uses the default value for Recommendations"{
+                Get-SQLDiagProduct -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
+            }
             It "Accepts Recommendations input via Pipeline" {
                 Get-SQLDiagRecommendations | Get-SQLDiagProduct -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
                 {Get-SQLDiagRecommendations | Get-SQLDiagProduct} | Should Not Throw
@@ -137,7 +140,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 3
+                    'Times'       = 7
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
@@ -162,7 +165,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 3
+                    'Times'       = 6
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
