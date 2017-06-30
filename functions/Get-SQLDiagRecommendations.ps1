@@ -27,7 +27,7 @@ Returns an object containing the information about the latest CUs for SQL Server
 
 .NOTES
     AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
-    DATE    28/05/2017
+    DATE    28/06/2017
 
 #>
 function Get-SQLDiagRecommendations {

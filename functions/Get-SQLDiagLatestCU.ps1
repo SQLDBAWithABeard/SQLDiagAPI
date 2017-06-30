@@ -77,7 +77,7 @@ SQL Server Diagnostic API into a database table and creates the table - Requires
 
 .NOTES
     AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
-    DATE    30/05/2017
+    DATE    30/06/2017
 #> 
 function Get-SQLDiagLatestCU {
     [cmdletbinding()]
