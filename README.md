@@ -23,5 +23,11 @@ in a file named SQLDiag.Cred
 
 ![alt text](https://newsqldbawiththebeard.files.wordpress.com/2017/06/screenshot.png "Get-SQLDiagLatestCU")
 
+### Get-SQLDiagProduct
+
+[This function](functions\Get-SQLDiagProduct.ps1) returns the products available in the SQL Server Diagnostic API
+
+![alt text](https://newsqldbawiththebeard.files.wordpress.com/2017/06/get-sqldiagproduct-screenshot.png "Get-SQLDiagProduct")
+
 Authored by Rob Sewell
 
