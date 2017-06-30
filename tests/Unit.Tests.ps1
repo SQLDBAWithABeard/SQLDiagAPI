@@ -55,9 +55,22 @@ InModuleScope -ModuleName SQLDiagAPI {
     }
 
     Describe "Get-SQLDiagLatestCU" -Tags Build , Unit {
-
-       
+        BeforeAll {
+            $Recommendations = (Get-Content $PSScriptRoot\recommendations.JSON) -join "`n" | ConvertFrom-Json
+            Mock Get-SQLDiagRecommendations {$Recommendations}
+        }
         Context "Input" {
+            It "Accepts input via Pipeline"{
+                Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
+            }
+            It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-SQLDiagRecommendations'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
 
         }
         Context "Execution" {
