@@ -42,7 +42,7 @@ InModuleScope -ModuleName SQLDiagAPI {
         }
         Context "Execution" {
             It "Returns a warning if unable to get Machine GUID" {
-                Mock Get-MachineGUID  {} -Verifiable
+                Mock Get-MachineGUID {} -Verifiable
                 Mock Write-Warning {"Warning"} -Verifiable
                 Get-SQLDiagRecommendations -APIKey dummykey | Should Be "Warning"
                 Assert-VerifiableMocks 
@@ -60,7 +60,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             Mock Get-SQLDiagRecommendations {$Recommendations}
         }
         Context "Input" {
-            It "Accepts Recommendations input via Pipeline"{
+            It "Accepts Recommendations input via Pipeline" {
                 Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
                 {Get-SQLDiagRecommendations | Get-SQLDiagLatestCU} | Should Not Throw
             }
@@ -81,10 +81,23 @@ InModuleScope -ModuleName SQLDiagAPI {
 
         }
         Context "Output" {
-        It "Returns expected values with no Product Parameter"{
+            BeforeAll {
                 $NoProductParameters = (Get-Content $PSScriptRoot\json\LatestCuProductDefault.JSON) -join "`n" | ConvertFrom-Json
-                (Get-SQLDiagLatestCU -Recommendations (Get-SQLDiagRecommendations)) -match $NoProductParameters | Should BeNullOrEmpty
-        }
+            }
+            It "Returns expected values with no Product Parameter" {
+                
+                Compare-Object (Get-SQLDiagLatestCU -Recommendations (Get-SQLDiagRecommendations)) $NoProductParameters | Should BeNullOrEmpty
+            }
+            $TestCases = @{ Product = 'SQL Server 2012 SP3'},
+            @{ ProductName = 'SQL Server 2016 SP1'},
+            @{ ProductName = 'SQL Server 2016 RTM'},
+            @{ ProductName = 'SQL Server 2014 SP1'}, 
+            @{ ProductName = 'SQL Server 2014 SP2'} 
+            It "Should Return only the filtered Product CU for <ProductName>" -TestCases $TestCases {
+                Param($ProductName)
+                $Results = $NoProductParameters.Where{$_.Product -eq $ProductName}
+                Compare-Object (Get-SQLDiagLatestCU -Recommendations (Get-SQLDiagRecommendations) -Product $ProductName) $Results |Should BeNullOrEmpty
+            }
         }
     }
 }
