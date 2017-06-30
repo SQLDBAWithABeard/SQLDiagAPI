@@ -172,4 +172,38 @@ InModuleScope -ModuleName SQLDiagAPI {
             }
         }
     }
+    Describe "Get-SQLDiagFeature" -Tags Build , Unit {
+        BeforeAll {
+            $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
+            Mock Get-SQLDiagRecommendations {$Recommendations}
+        }
+        Context "Input" {
+            It "Uses the default value for Recommendations" {
+                GGet-SQLDiagFeature -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
+            }
+            It "Accepts Recommendations input via Pipeline" {
+                Get-SQLDiagRecommendations | Get-SQLDiagFeature -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
+                {Get-SQLDiagRecommendations | Get-SQLDiagFeature} | Should Not Throw
+            }
+            It "Accepts Recommendations input via Parameter" {
+                Get-SQLDiagFeature -Recommendations $Recommendations -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
+            }
+            It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-SQLDiagRecommendations'
+                    'Times'       = 7
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+
+        }
+        Context "Execution" {
+
+        }
+        Context "Output" {
+           
+            
+        }
+    }
 }
