@@ -99,7 +99,7 @@ InModuleScope -ModuleName SQLDiagAPI {
                 Compare-Object (Get-SQLDiagLatestCU -Recommendations (Get-SQLDiagRecommendations) -Product $ProductName) $Results |Should BeNullOrEmpty
             }
             $TestCases = @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1'},
-            @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1','SQL Server 2016 RTM'},
+            @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM'},
             @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1'},
             @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1', 'SQL Server 2014 SP2'}
             It "Should Return only the filtered Product CU for multiple Products <ProductName>" -TestCases $TestCases {
@@ -131,7 +131,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             It "Accepts Recommendations input via Parameter" {
                 Get-SQLDiagProduct -Recommendations $Recommendations -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
             }
-            It "It accepts a string for Product"{
+            It "It accepts a string for Product" {
                 {Get-SQLDiagRecommendations | Get-SQLDiagProduct -Product SQL} | Should Not Throw
             }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
@@ -148,7 +148,25 @@ InModuleScope -ModuleName SQLDiagAPI {
 
         }
         Context "Output" {
-        
+            It "Returns the correct data without a product" {
+                Compare-Object (Get-SQLDiagRecommendations | Get-SQLDiagProduct) $Recommendations.Recommendations.Product | Should BeNullOrEmpty
+            }
+            It "Returns a single object for a search" {
+                $Results = $Recommendations.Recommendations.Product.Where{$_ -like '*2012*'}
+                Compare-Object (Get-SQLDiagRecommendations | Get-SQLDiagProduct) $results | Should BeNullOrEmpty
+            }
+            It "Returns multiple object for a search" {
+                $Results = $Recommendations.Recommendations.Product.Where{$_ -like '*2014*'}
+                Compare-Object (Get-SQLDiagRecommendations | Get-SQLDiagProduct) $results | Should BeNullOrEmpty
+            }    
+            It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-SQLDiagRecommendations'
+                    'Times'       = 3
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
         }
     }
 }
