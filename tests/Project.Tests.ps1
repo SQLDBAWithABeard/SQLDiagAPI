@@ -16,7 +16,7 @@ Describe "PSScriptAnalyzer rule-sets" -Tag Build, ScriptAnalyzer {
     foreach ( $Script in $scripts ) 
     {
         Context "Script '$($script.FullName)'" {
-
+            if ($FunctionHelpTestExceptions -contains $Script.Name) { continue }
             foreach ( $rule in $rules)
             {
                 # Skip all rules that are on the exclusions list
