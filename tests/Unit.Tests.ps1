@@ -56,7 +56,7 @@ InModuleScope -ModuleName SQLDiagAPI {
 
     Describe "Get-SQLDiagLatestCU" -Tags Build , Unit {
         BeforeAll {
-            $Recommendations = (Get-Content $PSScriptRoot\recommendations.JSON) -join "`n" | ConvertFrom-Json
+            $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
             Mock Get-SQLDiagRecommendations {$Recommendations}
         }
         Context "Input" {
