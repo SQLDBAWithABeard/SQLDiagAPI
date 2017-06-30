@@ -12,7 +12,7 @@ function Get-SQLDiagLatestCU {
             'SQL Server 2016 RTM',
             'SQL Server 2014 SP1',
             'SQL Server 2014 SP2')]
-        [String]$Product
+        [String[]]$Product
     )
     ## Much as I would love to have Products dynamically populated from the Recommendations parameter, this will not work for the pipeline
     ## I can make it work if Recommentations is a parameter but it need to work for the pipeline too
