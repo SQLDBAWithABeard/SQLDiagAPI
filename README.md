@@ -29,13 +29,13 @@ in a file named SQLDiag.Cred
 
 [This function](functions\Get-SQLDiagLatestCU.ps1) returns the latest Cumulative Updates and the date 
 
-![alt text](https://newsqldbawiththebeard.files.wordpress.com/2017/06/screenshot.png "Get-SQLDiagLatestCU")
+![alt text](https://newsqldbawiththebeard.files.wordpress.com/2017/06/get-sqldiagproduct-screenshot1.png "Get-SQLDiagLatestCU")
 
 ### Get-SQLDiagProduct
 
 [This function](functions\Get-SQLDiagProduct.ps1) returns the products available in the SQL Server Diagnostic API
 
-![alt text](https://newsqldbawiththebeard.files.wordpress.com/2017/06/get-sqldiagproduct-screenshot.png "Get-SQLDiagProduct")
+![alt text](https://newsqldbawiththebeard.files.wordpress.com/2017/06/screenshot1.png"Get-SQLDiagProduct")
 
 Authored by Rob Sewell
 
