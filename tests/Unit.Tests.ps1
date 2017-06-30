@@ -110,7 +110,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 10
+                    'Times'       = 29
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
@@ -153,11 +153,11 @@ InModuleScope -ModuleName SQLDiagAPI {
             }
             It "Returns a single object for a search" {
                 $Results = $Recommendations.Recommendations.Product.Where{$_ -like '*2012*'}
-                Compare-Object (Get-SQLDiagRecommendations | Get-SQLDiagProduct) $results | Should BeNullOrEmpty
+                Compare-Object (Get-SQLDiagRecommendations | Get-SQLDiagProduct -Product 2012) $results | Should BeNullOrEmpty
             }
             It "Returns multiple object for a search" {
                 $Results = $Recommendations.Recommendations.Product.Where{$_ -like '*2014*'}
-                Compare-Object (Get-SQLDiagRecommendations | Get-SQLDiagProduct) $results | Should BeNullOrEmpty
+                Compare-Object (Get-SQLDiagRecommendations | Get-SQLDiagProduct -Product 2014) $results | Should BeNullOrEmpty
             }    
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
