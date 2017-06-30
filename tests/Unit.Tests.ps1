@@ -137,7 +137,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 2
+                    'Times'       = 3
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 

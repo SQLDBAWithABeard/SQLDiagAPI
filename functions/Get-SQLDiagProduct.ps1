@@ -5,7 +5,9 @@ function Get-SQLDiagProduct {
             ValueFromPipeline,
             Mandatory = $true)]
         [ValidateNotNull()]
-        [pscustomobject]$Recommendations
+        [pscustomobject]$Recommendations,
+        [parameter(Mandatory = $false)]
+        [String]$Product
     )
     $recommendations.Recommendations.Product
 }
