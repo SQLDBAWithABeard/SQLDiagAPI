@@ -1,3 +1,52 @@
+<#
+.SYNOPSIS
+Gets The Latest Cumulative Updates and Date from the SQL Server Diagnostic API
+
+.DESCRIPTION
+Returns Product Name, Cumulative Update Name and Date created from the SQL Server Diagnostic API
+
+.PARAMETER Recommendations
+The recommendation object from the API - Use Get-SQLDiagRecommendations 
+
+.PARAMETER Product
+The product or products that you want to filter by Get-SQLDiagProducts will show the options
+
+.EXAMPLE
+Get-SQLDiagRecommendations | Get-SQLDiagLatestCU
+
+Returns Product Name, Cumulative Update Name and Date created for all products from the SQL Server Diagnostic API
+
+.EXAMPLE
+Get-SQLDiagLatestCU -Recommendations (Get-SQLDiagRecommendations)
+
+Returns Product Name, Cumulative Update Name and Date created for all products from the SQL Server Diagnostic API
+
+.EXAMPLE
+$Recommendations = Get-SQLDiagRecommendations 
+Get-SQLDiagLatestCU -Recommendations $Recommendations 
+
+Returns Product Name, Cumulative Update Name and Date created for all products from the SQL Server Diagnostic API
+
+.EXAMPLE
+$Recommendations = Get-SQLDiagRecommendations 
+Get-SQLDiagLatestCU -Recommendations $Recommendations 
+
+Returns Product Name, Cumulative Update Name and Date created for all products from the SQL Server Diagnostic API
+
+.EXAMPLE
+Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3'
+
+Returns Product Name, Cumulative Update Name and Date created for SQL Server 2012 SP3 from the SQL Server Diagnostic API
+
+.EXAMPLE
+Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1'
+
+Returns Product Name, Cumulative Update Name and Date created for SQL Server 2012 SP3 and SQL Server 2014 SP1 from the SQL Server Diagnostic API
+
+.NOTES
+    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
+    DATE    30/05/2017
+#> 
 function Get-SQLDiagLatestCU {
     [cmdletbinding()]
     Param(
