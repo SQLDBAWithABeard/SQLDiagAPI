@@ -81,7 +81,10 @@ InModuleScope -ModuleName SQLDiagAPI {
 
         }
         Context "Output" {
-        
+        It "Returns expected values with no Product Parameter"{
+                $NoProductParameters = (Get-Content $PSScriptRoot\json\LatestCuProductDefault.JSON) -join "`n" | ConvertFrom-Json
+                (Get-SQLDiagLatestCU -Recommendations (Get-SQLDiagRecommendations)) -match $NoProductParameters | Should BeNullOrEmpty
+        }
         }
     }
 }
