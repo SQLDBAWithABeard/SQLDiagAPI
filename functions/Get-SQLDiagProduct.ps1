@@ -1,3 +1,53 @@
+<#
+.SYNOPSIS
+Returns the Products avaiable in the SQL Server Diagnostic API
+
+.DESCRIPTION
+Enables you to search for the products that are available in the SQL Server Diagnostic API
+
+.PARAMETER Recommendations
+The recommendation object from the API - Use Get-SQLDiagRecommendations 
+
+.PARAMETER Product
+The search for the product you do not need to enter wildcards
+
+.EXAMPLE
+Get-SQLDiagRecommendations | Get-SQLDiagProduct
+
+Returns all of the Product Names in the SQL Server Diagnostic API
+
+.EXAMPLE
+Get-SQLDiagProduct -Recommendations (Get-SQLDiagRecommendations)
+
+Returns all of the Product Names in the SQL Server Diagnostic API
+
+.EXAMPLE
+$Recommendations = Get-SQLDiagRecommendations
+Get-SQLDiagProduct -Recommendations $Recommendations
+
+Returns all of the Product Names in the SQL Server Diagnostic API
+
+.EXAMPLE
+Get-SQLDiagRecommendations | Get-SQLDiagProduct -Product 2012
+
+Returns all of the Product Names in the SQL Server Diagnostic API with 2012 in the name
+
+.EXAMPLE
+Get-SQLDiagRecommendations | Get-SQLDiagProduct -Product SP1
+
+Returns all of the Product Names in the SQL Server Diagnostic API with SP1 in the name
+
+.EXAMPLE
+$product = Get-SQLDiagRecommendations |  Get-SQLDiagProduct -Product 2016
+Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -Product $product
+
+Returns Product Name, Cumulative Update Name and Date created for products with 2016 in the name from the 
+SQL Server Diagnostic API
+
+.NOTES
+    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
+    DATE    30/05/2017
+#>
 function Get-SQLDiagProduct {
     [cmdletbinding()]
     Param(
