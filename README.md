@@ -16,6 +16,12 @@ Please follow the instructions here [install](install.md)
 
 ## Commands
 
+To understand how best to use the commands please run
+
+    Get-Help CommandName -Full
+
+This will show you details and plenty of examples
+
 ### Get-SQLRecommendations
 
 [This function](functions\Get-SQLRecommendations.ps1) connects to the SQL Server Diagnostic Recommendations API and returns a PSCustomObject 
