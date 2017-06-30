@@ -2,6 +2,14 @@
 
 This is a module to work with the SQL Server Diagnostics (Preview) API. See https://blogs.msdn.microsoft.com/sql_server_team/sql-server-diagnostics-preview/ for more details 
 
+Blog Posts about this module
+
+How the module was created and usign TDD for Get-SQLDiagRecommendations
+http://sqldbawithabeard.com/2017/06/30/creating-a-powershell-module-and-tdd-for-get-sqldiagrecommendations/ 
+
+using Get-SQLDiagRecommendations
+http://sqldbawithabeard.com/2017/06/29/powershell-module-for-the-sql-server-diagnostics-api-1st-command-get-sqldiagrecommendations/
+
 ## Installation
 
 Please follow the instructions here [install](install.md)
