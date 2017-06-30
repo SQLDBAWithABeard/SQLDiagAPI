@@ -98,6 +98,15 @@ InModuleScope -ModuleName SQLDiagAPI {
                 $Results = $NoProductParameters.Where{$_.Product -eq $ProductName}
                 Compare-Object (Get-SQLDiagLatestCU -Recommendations (Get-SQLDiagRecommendations) -Product $ProductName) $Results |Should BeNullOrEmpty
             }
+            $TestCases = @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1'},
+            @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1','SQL Server 2016 RTM'},
+            @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1'},
+            @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1', 'SQL Server 2014 SP2'}
+            It "Should Return only the filtered Product CU for multiple Products <ProductName>" -TestCases $TestCases {
+                Param($ProductName)
+                $Results = $NoProductParameters.Where{$_.Product -eq $ProductName}
+                Compare-Object (Get-SQLDiagLatestCU -Recommendations (Get-SQLDiagRecommendations) -Product $ProductName) $Results |Should BeNullOrEmpty
+            }
         }
     }
 }
