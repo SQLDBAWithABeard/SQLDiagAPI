@@ -206,6 +206,17 @@ InModuleScope -ModuleName SQLDiagAPI {
                 $Results = (Get-Content $PSScriptRoot\json\Features.JSON) -join "`n" | ConvertFrom-Json
                 Compare-Object (Get-SQLDiagFeature) $results | Should BeNullOrEmpty
             }
+            $TestCases = @{ ProductName = 'SQL Server 2012 SP3'},
+            @{ ProductName = 'SQL Server 2016 SP1'},
+            @{ ProductName = 'SQL Server 2016 RTM'},
+            @{ ProductName = 'SQL Server 2014 SP1'}, 
+            @{ ProductName = 'SQL Server 2014 SP2'} 
+            It "Returns the features for a single product <ProductName>" -TestCases $TestCases {
+                Param($ProductName)
+                $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
+                $results = $features.Where{$_.Product -eq $ProductName}.Feature
+                Compare-Object (Get-SQLDiagFeature -Product $ProductName) $results | Should BeNullOrEmpty
+            }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
