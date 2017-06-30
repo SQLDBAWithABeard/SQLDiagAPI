@@ -53,4 +53,18 @@ InModuleScope -ModuleName SQLDiagAPI {
         
         }
     }
+
+    Describe "Get-SQLDiagLatestCU" -Tags Build , Unit {
+
+       
+        Context "Input" {
+
+        }
+        Context "Execution" {
+
+        }
+        Context "Output" {
+        
+        }
+    }
 }
