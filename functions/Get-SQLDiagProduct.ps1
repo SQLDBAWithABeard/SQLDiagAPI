@@ -67,6 +67,6 @@ function Get-SQLDiagProduct {
     $recommendations.Recommendations.Product
 }
 else{
-        $recommendations.Recommendations.Product.Where{$_ -like "*$($Product)*"}
+        $recommendations.Recommendations.Product | Where-Object {$_ -like "*$($Product)*"}
 }
 }
