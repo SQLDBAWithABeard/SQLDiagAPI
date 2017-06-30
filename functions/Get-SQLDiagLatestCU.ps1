@@ -31,5 +31,17 @@ function Get-SQLDiagLatestCU {
                 }
             }
         }
+        else {
+            foreach ($recommendation in $recommendations.Recommendations.Where{$_.Product -in $Product}) {
+                $ProductName = $recommendation.Product
+                $CU = $recommendation.Title
+                $CreatedOn = $recommendation.CreatedOn
+                [PSCustomObject]@{
+                    Product   = $ProductName
+                    CU        = $CU
+                    CreatedOn = $CreatedOn
+                }
+            }
+        }
     }
 }
