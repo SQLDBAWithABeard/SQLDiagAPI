@@ -9,5 +9,10 @@ function Get-SQLDiagProduct {
         [parameter(Mandatory = $false)]
         [String]$Product
     )
+    if(!($Product)){
     $recommendations.Recommendations.Product
+}
+else{
+        $recommendations.Recommendations.Product.Where{$_ -like "*$($Product)*"}
+}
 }
