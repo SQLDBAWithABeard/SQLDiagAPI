@@ -43,5 +43,11 @@ in a file named SQLDiag.Cred
 
 ![alt text](https://newsqldbawiththebeard.files.wordpress.com/2017/06/screenshot1.png "Get-SQLDiagProduct")
 
+Get-SQLDiagFeature
+[This function](functions\Get-SQLDiagFeature.ps1) will show the feature areas that have fixes in the SQL Server Diagnostics Recommendations API for one, several or all products
+
+![alt text](https://newsqldbawiththebeard.files.wordpress.com/2017/06/get-sqldiagproduct-screenshot1.png "Get-SQLDiagFeature")
+
+
 Authored by Rob Sewell
 
