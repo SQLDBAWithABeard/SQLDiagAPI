@@ -45,6 +45,13 @@ Returns Product Name, Cumulative Update Name and Date created for SQL Server 201
 SQL Server Diagnostic API
 
 .EXAMPLE
+$product = Get-SQLDiagRecommendations |  Get-SQLDiagProduct -Product 2016
+Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -Product $product
+
+Returns Product Name, Cumulative Update Name and Date created for products with 2016 in the name from the 
+SQL Server Diagnostic API
+
+.EXAMPLE
 Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1' | Out-GridView
 
 Returns Product Name, Cumulative Update Name and Date created for SQL Server 2012 SP3 and SQL Server 2014 SP1 from the 
@@ -76,15 +83,11 @@ function Get-SQLDiagLatestCU {
         [ValidateNotNull()]
         [pscustomobject]$Recommendations,
         [parameter(Mandatory = $false)]
-        [ValidateSet('SQL Server 2012 SP3',
-            'SQL Server 2016 SP1',
-            'SQL Server 2016 RTM',
-            'SQL Server 2014 SP1',
-            'SQL Server 2014 SP2')]
+        [ValidateScript( {Get-SQLDiagRecommendations | Get-SQLDiagProduct})]
         [String[]]$Product
     )
     ## Much as I would love to have Products dynamically populated from the Recommendations parameter, this will not work for the pipeline
-    ## I can make it work if Recommentations is a parameter but it need to work for the pipeline too
+    ## I can make it work if Recommendations is a parameter but it needs to work for the pipeline too
     ## If anyone know how to do this I would be grateful
     Begin {}
     Process {
