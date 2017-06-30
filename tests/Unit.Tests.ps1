@@ -88,7 +88,7 @@ InModuleScope -ModuleName SQLDiagAPI {
                 
                 Compare-Object (Get-SQLDiagLatestCU -Recommendations (Get-SQLDiagRecommendations)) $NoProductParameters | Should BeNullOrEmpty
             }
-            $TestCases = @{ Product = 'SQL Server 2012 SP3'},
+            $TestCases = @{ ProductName = 'SQL Server 2012 SP3'},
             @{ ProductName = 'SQL Server 2016 SP1'},
             @{ ProductName = 'SQL Server 2016 RTM'},
             @{ ProductName = 'SQL Server 2014 SP1'}, 
