@@ -201,9 +201,11 @@ InModuleScope -ModuleName SQLDiagAPI {
         Context "Execution" {
 
         }
-        Context "Output" {
-           
-            
+        Context "Output" {           
+            It "With No parameter returns a unique list of features" {
+                $Results = (Get-Content $PSScriptRoot\json\Features.JSON) -join "`n" | ConvertFrom-Json
+                Compare-Object (Get-SQLDiagFeature) $results | Should BeNullOrEmpty
+            }
         }
     }
 }
