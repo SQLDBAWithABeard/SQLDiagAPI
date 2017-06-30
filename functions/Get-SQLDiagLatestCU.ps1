@@ -6,10 +6,15 @@ Gets The Latest Cumulative Updates and Date from the SQL Server Diagnostic API
 Returns Product Name, Cumulative Update Name and Date created from the SQL Server Diagnostic API
 
 .PARAMETER Recommendations
-The recommendation object from the API - Use Get-SQLDiagRecommendations 
+The recommendation object from the API - Use Get-SQLDiagRecommendations by default
 
 .PARAMETER Product
 The product or products that you want to filter by Get-SQLDiagProduct will show the options
+
+.EXAMPLE
+Get-SQLDiagLatestCU
+
+Returns Product Name, Cumulative Update Name and Date created for all products from the SQL Server Diagnostic API
 
 .EXAMPLE
 Get-SQLDiagRecommendations | Get-SQLDiagLatestCU
@@ -34,37 +39,37 @@ Get-SQLDiagLatestCU -Recommendations $Recommendations
 Returns Product Name, Cumulative Update Name and Date created for all products from the SQL Server Diagnostic API
 
 .EXAMPLE
-Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3'
+Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3'
 
 Returns Product Name, Cumulative Update Name and Date created for SQL Server 2012 SP3 from the SQL Server Diagnostic API
 
 .EXAMPLE
-Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1'
+Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1'
 
 Returns Product Name, Cumulative Update Name and Date created for SQL Server 2012 SP3 and SQL Server 2014 SP1 from the 
 SQL Server Diagnostic API
 
 .EXAMPLE
-$product = Get-SQLDiagRecommendations |  Get-SQLDiagProduct -Product 2016
-Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -Product $product
+$product =  Get-SQLDiagProduct -Product 2016
+Get-SQLDiagLatestCU -Product $product
 
 Returns Product Name, Cumulative Update Name and Date created for products with 2016 in the name from the 
 SQL Server Diagnostic API
 
 .EXAMPLE
-Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1' | Out-GridView
+Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1' | Out-GridView
 
 Returns Product Name, Cumulative Update Name and Date created for SQL Server 2012 SP3 and SQL Server 2014 SP1 from the 
 SQL Server Diagnostic API and outputs to Out-GridView
 
 .EXAMPLE
-Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1' | Out-File C:\Temp\LatestCU.txt
+Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1' | Out-File C:\Temp\LatestCU.txt
 
 Returns Product Name, Cumulative Update Name and Date created for SQL Server 2012 SP3 and SQL Server 2014 SP1 from the 
 SQL Server Diagnostic API and outputs to a File C:\Temp\LatestCU.txt
 
 .EXAMPLE
-$LatestCu = Get-SQLDiagRecommendations | Get-SQLDiagLatestCU | Out-DbaDataTable
+$LatestCu =  Get-SQLDiagLatestCU | Out-DbaDataTable
 Write-DbaDataTable -SqlServer $Server -Database $DB -InputObject $LatestCu-Table $LatestCu -AutoCreateTable
 
 Puts Product Name, Cumulative Update Name and Date created for all products from the 
@@ -79,11 +84,11 @@ function Get-SQLDiagLatestCU {
     Param(
         [parameter(ValueFromPipelineByPropertyName, 
             ValueFromPipeline,
-            Mandatory = $true)]
+            Mandatory = $false)]
         [ValidateNotNull()]
-        [pscustomobject]$Recommendations,
+        [pscustomobject] $Recommendations = (Get-SQLDiagRecommendations),
         [parameter(Mandatory = $false)]
-        [ValidateScript( {Get-SQLDiagRecommendations | Get-SQLDiagProduct})]
+        [ValidateScript( {Get-SQLDiagProduct})]
         [String[]]$Product
     )
     ## Much as I would love to have Products dynamically populated from the Recommendations parameter, this will not work for the pipeline
