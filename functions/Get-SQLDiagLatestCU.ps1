@@ -5,7 +5,20 @@ function Get-SQLDiagLatestCU {
             ValueFromPipeline,
             Mandatory=$true)]
         [ValidateNotNull()]
-        [pscustomobject]$Recommendations)
-
-        $Recommendations
+        [pscustomobject]$Recommendations,
+        [parameter(Mandatory = $false)]
+        [ValidateSet('SQL Server 2012 SP3',
+            'SQL Server 2016 SP1',
+            'SQL Server 2016 RTM',
+            'SQL Server 2014 SP1',
+            'SQL Server 2014 SP2')]
+        [pscustomobject]$Product
+        )
+        ## Much as I would love to have Products dynamically populated from the Recommendations parameter, this will not work for the pipeline
+        ## I can make it work if Recommentations is a parameter but it need to work for the pipeline too
+        ## If anyone know how to do this I would be grateful
+    Begin{}
+    Process{
+    $Recommendations
+    }
 }
