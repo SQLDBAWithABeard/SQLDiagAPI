@@ -217,10 +217,19 @@ InModuleScope -ModuleName SQLDiagAPI {
                 $results = $features.Where{$_.Product -eq $ProductName}.Feature
                 Compare-Object (Get-SQLDiagFeature -Product $ProductName) $results | Should BeNullOrEmpty
             }
+            $TestCases = @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1'},
+            @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM'},
+            @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1'},
+            @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1', 'SQL Server 2014 SP2'}
+            It "Should Return only the filtered features for multiple Products <ProductName>" -TestCases $TestCases {
+                Param($ProductName)
+                $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
+                $results = $features.Where{$_.Product -in $ProductName} | Select-Object Feature -Unique -ExpandProperty Feature 
+                Compare-Object (Get-SQLDiagFeature -Product $ProductName) $results | Should BeNullOrEmpty}
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 11
+                    'Times'       = 29
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
