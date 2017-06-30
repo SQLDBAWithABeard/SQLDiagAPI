@@ -17,6 +17,11 @@ Details here https://ecsapi.portal.azure-api.net/
 It requires the APIKey parameter or the APIKey to be stored using Export-CliXML in the users profile
 in a file named SQLDiag.Cred
 
+### Get-SQLDiagLatestCU
+
+[This function](functions\Get-SQLDiagLatestCU.ps1) returns the latest Cumulative Updates and the date 
+
+![alt text](https://newsqldbawiththebeard.files.wordpress.com/2017/06/screenshot.png "Get-SQLDiagLatestCU")
 
 Authored by Rob Sewell
 
