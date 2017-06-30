@@ -35,7 +35,7 @@ in a file named SQLDiag.Cred
 
 [This function](functions\Get-SQLDiagProduct.ps1) returns the products available in the SQL Server Diagnostic API
 
-![alt text](https://newsqldbawiththebeard.files.wordpress.com/2017/06/screenshot1.png"Get-SQLDiagProduct")
+![alt text](https://newsqldbawiththebeard.files.wordpress.com/2017/06/screenshot1.png "Get-SQLDiagProduct")
 
 Authored by Rob Sewell
 
