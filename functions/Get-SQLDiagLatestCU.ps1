@@ -9,7 +9,7 @@ Returns Product Name, Cumulative Update Name and Date created from the SQL Serve
 The recommendation object from the API - Use Get-SQLDiagRecommendations 
 
 .PARAMETER Product
-The product or products that you want to filter by Get-SQLDiagProducts will show the options
+The product or products that you want to filter by Get-SQLDiagProduct will show the options
 
 .EXAMPLE
 Get-SQLDiagRecommendations | Get-SQLDiagLatestCU
