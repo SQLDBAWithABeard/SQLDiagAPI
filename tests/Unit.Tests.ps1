@@ -64,7 +64,7 @@ InModuleScope -ModuleName SQLDiagAPI {
                 Get-SQLDiagRecommendations | Get-SQLDiagLatestCU -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
                 {Get-SQLDiagRecommendations | Get-SQLDiagLatestCU} | Should Not Throw
             }
-            It "Accepts Recommendations Input via Parameter" {
+            It "Accepts Recommendations input via Parameter" {
                 Get-SQLDiagLatestCU -Recommendations $Recommendations -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
             }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
@@ -118,7 +118,7 @@ InModuleScope -ModuleName SQLDiagAPI {
         }
     }
 
-    Describe "Get-SQLDiagProducts" -Tags Build , Unit {
+    Describe "Get-SQLDiagProduct" -Tags Build , Unit {
         BeforeAll {
             $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
             Mock Get-SQLDiagRecommendations {$Recommendations}
@@ -128,8 +128,8 @@ InModuleScope -ModuleName SQLDiagAPI {
                 Get-SQLDiagRecommendations | Get-SQLDiagProduct -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
                 {Get-SQLDiagRecommendations | Get-SQLDiagProduct} | Should Not Throw
             }
-            It "Accepts Recommendations Input via Parameter" {
-                Get-SQLDiagProduct-Recommendations $Recommendations -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
+            It "Accepts Recommendations input via Parameter" {
+                Get-SQLDiagProduct -Recommendations $Recommendations -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
             }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
