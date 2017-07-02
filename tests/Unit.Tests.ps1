@@ -68,6 +68,22 @@ InModuleScope -ModuleName SQLDiagAPI {
             It "Accepts Recommendations input via Parameter" {
                 Get-SQLDiagLatestCU -Recommendations $Recommendations -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
             }
+            It "Accepts Product via Parameter" {
+                Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
+                {Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' } | Should Not throw
+            }
+            It "Accepts Product without a Parameter name" {
+                                Get-SQLDiagLatestCU 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
+                {Get-SQLDiagLatestCU  'SQL Server 2012 SP3' } | Should Not throw
+            }
+            It "Accepts single product from the pipeline" {
+                Get-SQLDiagProduct 2012 | Get-SQLDiagLatestCU | Should Not BeNullOrEmpty
+                {Get-SQLDiagProduct 2012 | Get-SQLDiagLatestCU} | Should Not throw
+            }
+            It "Accepts multiple products from the pipeline" {
+                Get-SQLDiagProduct 2014 | Get-SQLDiagLatestCU | Should Not BeNullOrEmpty
+                {Get-SQLDiagProduct 2014 | Get-SQLDiagLatestCU} | Should Not throw
+            }
             It "Learnmore switch throws a warning if no Product specified" {
                 Get-SQLDiagLatestCU -LearnMore | Should Be "warning"
             }
@@ -91,7 +107,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 12
+                    'Times'       = 36
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
