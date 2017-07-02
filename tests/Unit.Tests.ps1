@@ -71,10 +71,13 @@ InModuleScope -ModuleName SQLDiagAPI {
             It "Learnmore switch throws a warning if no Product specified" {
                 Get-SQLDiagLatestCU -LearnMore | Should Be "warning"
             }
+            It "Download switch throws a warning if no Product specified" {
+                Get-SQLDiagLatestCU -Download | Should Be "warning"
+            }
             It 'Checks the Mock was called for Write-Warning' {
                 $assertMockParams = @{
                     'CommandName' = 'Write-Warning'
-                    'Times'       = 1
+                    'Times'       = 2
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
