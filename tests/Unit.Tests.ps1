@@ -131,6 +131,9 @@ InModuleScope -ModuleName SQLDiagAPI {
             It "LearnMore switch opens a browser with a Product specified" {
                 Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' -LearnMore | Should Be "browser"
             }
+            It "Download switch opens a browser with a Product specified" {
+                Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' -Download | Should Be "browser"
+            }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
