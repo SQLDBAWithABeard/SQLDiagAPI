@@ -242,10 +242,26 @@ InModuleScope -ModuleName SQLDiagAPI {
             It "Accepts Recommendations input via Parameter" {
                 Get-SQLDiagFeature -Recommendations $Recommendations -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
             }
+            It "Accepts Product via Parameter" {
+                Get-SQLDiagFeature -Product 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
+                {Get-SQLDiagFeature -Product 'SQL Server 2012 SP3' } | Should Not throw
+            }
+            It "Accepts Product without a Parameter name" {
+                Get-SQLDiagFeature 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
+                {Get-SQLDiagFeature  'SQL Server 2012 SP3' } | Should Not throw
+            }
+            It "Accepts single product from the pipeline" {
+                Get-SQLDiagProduct 2012 | Get-SQLDiagFeature | Should Not BeNullOrEmpty
+                {Get-SQLDiagProduct 2012 | Get-SQLDiagFeature} | Should Not throw
+            }
+            It "Accepts multiple products from the pipeline" {
+                Get-SQLDiagProduct 2014 | Get-SQLDiagFeature | Should Not BeNullOrEmpty
+                {Get-SQLDiagProduct 2014 | Get-SQLDiagFeature} | Should Not throw
+            }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 5
+                    'Times'       = 29
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
