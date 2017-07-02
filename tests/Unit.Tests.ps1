@@ -58,6 +58,7 @@ InModuleScope -ModuleName SQLDiagAPI {
         BeforeAll {
             $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
             Mock Get-SQLDiagRecommendations {$Recommendations}
+            Mock Invoke-Item {"browser"}
         }
         Context "Input" {
             It "Accepts Recommendations input via Pipeline" {
@@ -74,6 +75,9 @@ InModuleScope -ModuleName SQLDiagAPI {
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
+            }
+            It "LearnMore switch opens a browser" {
+                Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' -LearnMore | Should Be "browser"
             }
 
         }
