@@ -15,19 +15,9 @@ The search for the product you do not need to enter wildcards
 Get-SQLDiagProduct
 
 Returns all of the Product Names in the SQL Server Diagnostic API
+
 .EXAMPLE
 Get-SQLDiagRecommendations | Get-SQLDiagProduct
-
-Returns all of the Product Names in the SQL Server Diagnostic API
-
-.EXAMPLE
-Get-SQLDiagProduct -Recommendations (Get-SQLDiagRecommendations)
-
-Returns all of the Product Names in the SQL Server Diagnostic API
-
-.EXAMPLE
-$Recommendations = Get-SQLDiagRecommendations
-Get-SQLDiagProduct -Recommendations $Recommendations
 
 Returns all of the Product Names in the SQL Server Diagnostic API
 
@@ -38,6 +28,11 @@ Returns all of the Product Names in the SQL Server Diagnostic API with 2012 in t
 
 .EXAMPLE
 Get-SQLDiagProduct -Product SP1
+
+Returns all of the Product Names in the SQL Server Diagnostic API with SP1 in the name
+
+.EXAMPLE
+Get-SQLDiagProduct SP1
 
 Returns all of the Product Names in the SQL Server Diagnostic API with SP1 in the name
 
@@ -60,7 +55,9 @@ function Get-SQLDiagProduct {
             Mandatory = $false)]
         [ValidateNotNull()]
         [pscustomobject]$Recommendations = (Get-SQLDiagRecommendations),
-        [parameter(Mandatory = $false)]
+        [parameter(ValueFromPipelineByPropertyName, 
+            ValueFromPipeline, Position = 0,
+            Mandatory = $false)]
         [String]$Product
     )
     if(!($Product)){
