@@ -58,8 +58,7 @@ InModuleScope -ModuleName SQLDiagAPI {
         BeforeAll {
             $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
             Mock Get-SQLDiagRecommendations {$Recommendations}
-            Mock Start-Process {"browser"}
-            Mock Write-Warning{"warning"}
+            Mock Write-Warning {"warning"}
         }
         Context "Input" {
             It "Accepts Recommendations input via Pipeline" {
@@ -69,32 +68,21 @@ InModuleScope -ModuleName SQLDiagAPI {
             It "Accepts Recommendations input via Parameter" {
                 Get-SQLDiagLatestCU -Recommendations $Recommendations -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
             }
-            It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
-                $assertMockParams = @{
-                    'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 4
-                    'Exactly'     = $true
-                }
-                Assert-MockCalled @assertMockParams 
-            }
             It "Learnmore switch throws a warning if no Product specified" {
                 Get-SQLDiagLatestCU -LearnMore | Should Be "warning"
-            }
-            It "LearnMore switch opens a browser with a Product specified" {
-                Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' -LearnMore | Should Be "browser"
-            }
-            It 'Checks the Mock was called for Start-Process' {
-                $assertMockParams = @{
-                    'CommandName' = 'Start-Process'
-                    'Times'       = 1
-                    'Exactly'     = $true
-                }
-                Assert-MockCalled @assertMockParams 
             }
             It 'Checks the Mock was called for Write-Warning' {
                 $assertMockParams = @{
                     'CommandName' = 'Write-Warning'
                     'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-SQLDiagRecommendations'
+                    'Times'       = 5
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
@@ -106,6 +94,7 @@ InModuleScope -ModuleName SQLDiagAPI {
         Context "Output" {
             BeforeAll {
                 $NoProductParameters = (Get-Content $PSScriptRoot\json\LatestCuProductDefault.JSON) -join "`n" | ConvertFrom-Json
+                Mock Start-Process {"browser"}
             }
             It "Returns expected values with no Product Parameter" {
                 
@@ -130,10 +119,21 @@ InModuleScope -ModuleName SQLDiagAPI {
                 $Results = $NoProductParameters.Where{$_.Product -in $ProductName}
                 Compare-Object (Get-SQLDiagLatestCU -Recommendations (Get-SQLDiagRecommendations) -Product $ProductName) $Results |Should BeNullOrEmpty
             }
+            It "LearnMore switch opens a browser with a Product specified" {
+                Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' -LearnMore | Should Be "browser"
+            }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 29
+                    'Times'       = 31
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Start-Process' {
+                $assertMockParams = @{
+                    'CommandName' = 'Start-Process'
+                    'Times'       = 1
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
@@ -147,7 +147,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             Mock Get-SQLDiagRecommendations {$Recommendations}
         }
         Context "Input" {
-            It "Uses the default value for Recommendations"{
+            It "Uses the default value for Recommendations" {
                 Get-SQLDiagProduct -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
             }
             It "Accepts Recommendations input via Pipeline" {
