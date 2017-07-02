@@ -4,12 +4,20 @@ Gets The Latest Cumulative Updates and Date from the SQL Server Diagnostic API
 
 .DESCRIPTION
 Returns Product Name, Cumulative Update Name and Date created from the SQL Server Diagnostic API
+Opens the Learn More webpage with the LearnMore switch
+Downloads the CU with teh Download Switch
 
 .PARAMETER Recommendations
 The recommendation object from the API - Use Get-SQLDiagRecommendations by default
 
 .PARAMETER Product
 The product or products that you want to filter by Get-SQLDiagProduct will show the options
+
+.PARAMETER LearnMore
+Opens the Information web-page for the Cumulative Update for the product specified in the default browser
+
+.PARAMETER Download
+Opens the Download page for the Cumulative Update for the product specified in the default browser
 
 .EXAMPLE
 Get-SQLDiagLatestCU
@@ -48,6 +56,16 @@ Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1'
 
 Returns Product Name, Cumulative Update Name and Date created for SQL Server 2012 SP3 and SQL Server 2014 SP1 from the 
 SQL Server Diagnostic API
+
+.EXAMPLE
+Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' -LearnMore
+
+Opens the Cumulative Update for SQL Server 2012 SP3 information webpage int eh default browser
+
+.EXAMPLE
+Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' -Download
+
+Opens the Cumulative Update for SQL Server 2012 SP3 download webpage int eh default browser
 
 .EXAMPLE
 $product =  Get-SQLDiagProduct -Product 2016
@@ -90,7 +108,8 @@ function Get-SQLDiagLatestCU {
         [parameter(Mandatory = $false)]
         [ValidateScript( {Get-SQLDiagProduct})]
         [String[]]$Product,
-        [switch]$LearnMore
+        [switch]$LearnMore,
+        [switch]$Download
     )
     ## Much as I would love to have Products dynamically populated from the Recommendations parameter, this will not work for the pipeline
     ## I can make it work if Recommendations is a parameter but it needs to work for the pipeline too
@@ -99,21 +118,31 @@ function Get-SQLDiagLatestCU {
     Process {
 
         ## We only want one product to open a learnmore web-page
-        if($LearnMore -and (!$Product)){
-            Write-Warning "The Learn More switch requires a Product so that it only opens one browser window."
+        if ($LearnMore -and $Product.Count -ne 1) {
+            Write-Warning "The Learn More switch requires a single Product so that it only opens one browser window."
             break
         }
 
         ## If we have one product and the learnmore switch open the web-page
-        if($LearnMore -and $Product)
-        {
+        elseif ($LearnMore -and $Product.Count -eq 1) {
             $URL = (($recommendations.Recommendations | Where-Object {$_.Product -eq $product}).Content.ExternalLinks | Where-Object {$_.Rel -eq 'LearnMore'}).Href
             Start-Process $Url
             break
         }
 
+        ## We only want one product to download
+        elseif ($Download -and $Product.Count -ne 1) {
+            Write-Warning "The Download switch requires a single Product"
+            break
+        }
+        
+        elseif ($Download -and $Product.Count -eq 1) {
+            $URL = (($recommendations.Recommendations | Where-Object {$_.Product -eq $product}).Content.ExternalLinks | Where-Object {$_.Rel -eq 'Download'}).Href
+            Start-Process $Url
+            break
+        }
         ## If no Product specified display information for all Products
-        if (!($Product)) {
+        elseif (!($Product)) {
             foreach ($recommendation in $recommendations.Recommendations) {
                 $ProductName = $recommendation.Product
                 $CU = $recommendation.Title
@@ -125,6 +154,7 @@ function Get-SQLDiagLatestCU {
                 }
             }
         }
+
         ## Otherwise display information for specified product
         else {
             foreach ($recommendation in $recommendations.Recommendations | Where-Object {$_.Product -in $Product}) {
