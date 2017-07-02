@@ -360,5 +360,77 @@ InModuleScope -ModuleName SQLDiagAPI {
         }
     }
 
+    Describe "Get-SQLDiagFix" -Tags Build , Unit, Fix {
+        BeforeAll {
+            $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
+            Mock Get-SQLDiagRecommendations {$Recommendations}
+        }
+
+        Context "Input" {
+            It "Uses the default value for Recommendations" {
+                Get-SQLDiagFix -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
+            }
+            It "Accepts Recommendations input via Pipeline" {
+                Get-SQLDiagRecommendations | Get-SQLDiagFix -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
+                {Get-SQLDiagRecommendations | Get-SQLDiagFix} | Should Not Throw
+            }
+            It "Accepts Recommendations input via Parameter" {
+                Get-SQLDiagFix -Recommendations $Recommendations -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
+            }
+            It "Accepts Product via Parameter" {
+                Get-SQLDiagFix -Product 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
+                {Get-SQLDiagFix -Product 'SQL Server 2012 SP3' } | Should Not throw
+            }
+            It "Accepts Product without a Parameter name" {
+                Get-SQLDiagFix 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
+                {Get-SQLDiagFix  'SQL Server 2012 SP3' } | Should Not throw
+            }
+            It "Accepts single product from the pipeline" {
+                Get-SQLDiagProduct 2012 | Get-SQLDiagFix | Should Not BeNullOrEmpty
+                {Get-SQLDiagProduct 2012 | Get-SQLDiagFix} | Should Not throw
+            }
+            It "Accepts multiple products from the pipeline" {
+                Get-SQLDiagProduct 2014 | Get-SQLDiagFix | Should Not BeNullOrEmpty
+                {Get-SQLDiagProduct 2014 | Get-SQLDiagFix} | Should Not throw
+            }
+            It "Accepts Feature via Parameter" {
+                Get-SQLDiagFix -Feature 'Always On' | Should Not BeNullOrEmpty
+                {Get-SQLDiagFix -Feature 'Always On' } | Should Not throw
+            }
+            It "Accepts Feature without a Parameter name" {
+                Get-SQLDiagFix 'Always On' | Should Not BeNullOrEmpty
+                {Get-SQLDiagFix  'Always On' } | Should Not throw
+            }
+            It "Accepts single Feature from the pipeline" {
+                Get-SQLDiagFeature Always | Get-SQLDiagFix | Should Not BeNullOrEmpty
+                {Get-SQLDiagFeature Always | Get-SQLDiagFix} | Should Not throw
+            }
+            It "Accepts multiple Features from the pipeline" {
+                Get-SQLDiagFeature Co | Get-SQLDiagFix | Should Not BeNullOrEmpty
+                {Get-SQLDiagFeature Co | Get-SQLDiagFix} | Should Not throw
+            }
+            It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-SQLDiagRecommendations'
+                    'Times'       = 0
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+        }
+        Context "Execution" {
+
+        }
+        Context "Output" {
+            It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-SQLDiagRecommendations'
+                    'Times'       = 0
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+        }
+    }
 
 }
