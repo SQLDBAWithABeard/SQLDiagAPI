@@ -30,6 +30,12 @@ Get-SQLDiagFeature -Product $product
 This will return a unique list of all of the Feature Areas that have fixes for products with 2016 in the name 
 from the SQL Server Diagnostic API
 
+.EXAMPLE
+Get-SQLDiagProduct 2016 | Get-SQLDiagFeature 
+
+This will return a unique list of all of the Feature Areas that have fixes for products with 2016 in the name 
+from the SQL Server Diagnostic API
+
 .NOTES
     AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
     DATE    30/06/2017
@@ -38,11 +44,10 @@ function Get-SQLDiagFeature {
     [cmdletbinding()]
     Param(
         [parameter(ValueFromPipelineByPropertyName, 
-            ValueFromPipeline,
             Mandatory = $false)]
         [ValidateNotNull()]
         [pscustomobject] $Recommendations = (Get-SQLDiagRecommendations),
-        [parameter(Mandatory = $false)]
+        [parameter(Mandatory = $false, ValueFromPipeline = $true, Position = 0)]
         [ValidateScript( {Get-SQLDiagProduct})]
         [String[]]$Product
     )
