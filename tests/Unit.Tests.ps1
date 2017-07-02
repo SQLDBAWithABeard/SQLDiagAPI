@@ -59,6 +59,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
             Mock Get-SQLDiagRecommendations {$Recommendations}
             Mock Invoke-Item {"browser"}
+            Mock Write-Warning{"warning"}
         }
         Context "Input" {
             It "Accepts Recommendations input via Pipeline" {
@@ -76,10 +77,28 @@ InModuleScope -ModuleName SQLDiagAPI {
                 }
                 Assert-MockCalled @assertMockParams 
             }
-            It "LearnMore switch opens a browser" {
+            It "Learnmore switch throws a warning if no Product sepecified" {
+                Get-SQLDiagLatestCU -LearnMore | Should Be "warning"
+            }
+            It "LearnMore switch opens a browser with a Product specified" {
                 Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' -LearnMore | Should Be "browser"
             }
-
+            It 'Checks the Mock was called for Invoke-Item' {
+                $assertMockParams = @{
+                    'CommandName' = 'Invoke-Item'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Write-Warning' {
+                $assertMockParams = @{
+                    'CommandName' = 'Warning'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
         }
         Context "Execution" {
 
