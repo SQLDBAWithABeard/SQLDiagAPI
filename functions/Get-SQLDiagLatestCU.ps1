@@ -89,13 +89,23 @@ function Get-SQLDiagLatestCU {
         [pscustomobject] $Recommendations = (Get-SQLDiagRecommendations),
         [parameter(Mandatory = $false)]
         [ValidateScript( {Get-SQLDiagProduct})]
-        [String[]]$Product
+        [String[]]$Product,
+        [switch]$LearnMore
     )
     ## Much as I would love to have Products dynamically populated from the Recommendations parameter, this will not work for the pipeline
     ## I can make it work if Recommendations is a parameter but it needs to work for the pipeline too
     ## If anyone know how to do this I would be grateful
     Begin {}
     Process {
+        if($LearnMore -and (!$Product)){
+            Write-Warning "The Learn More switch requires a Product so that it only opens one browser window."
+            break
+        }
+        if($LearnMore -and $Product)
+        {
+            Start-Process 'https://google.co.uk'
+            break
+        }
         if (!($Product)) {
             foreach ($recommendation in $recommendations.Recommendations) {
                 $ProductName = $recommendation.Product
