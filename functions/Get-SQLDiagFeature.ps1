@@ -55,14 +55,17 @@ function Get-SQLDiagFeature {
             Mandatory = $false)]
         [ValidateNotNull()]
         [pscustomobject] $Recommendations = (Get-SQLDiagRecommendations),
-        [parameter(Mandatory = $false, ValueFromPipeline = $true)]
+        [parameter(Mandatory = $false, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true)]
         [ValidateScript( {Get-SQLDiagProduct})]
-        [string[]]$Product,
+        [object[]]$Product,
         [parameter(Mandatory = $false, Position = 0)]
         [String[]]$Feature
     )
-    # Define empoty features array
-    $features = @()
+    Begin{
+        # Define empty features array
+        $features = @()
+    }
+    Process{
     
     # If no product grab all of the features and add them to the features array if not already there
     if (!($Product)) {
@@ -90,13 +93,16 @@ function Get-SQLDiagFeature {
             }
         }
     }
-    ## if feature search return only features that match the search term alphabetically
-    if ($Feature) {
-        $features | Where-Object {$_ -like "*$($Feature)*"} | Sort-Object
-    }
-    ## otherwise return the lot alphabetically
-    else {
-         $features | Sort-Object
-    }
-   
+
+}
+End{
+        ## if feature search return only features that match the search term alphabetically
+        if ($Feature) {
+            $features | Where-Object {$_ -like "*$($Feature)*"} | Sort-Object
+        }
+        ## otherwise return the lot alphabetically
+        else {
+            $features | Sort-Object
+        }
+}
 }
