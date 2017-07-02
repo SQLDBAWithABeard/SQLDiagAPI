@@ -35,16 +35,9 @@ Get-SQLDiagLatestCU -Recommendations (Get-SQLDiagRecommendations)
 Returns Product Name, Cumulative Update Name and Date created for all products from the SQL Server Diagnostic API
 
 .EXAMPLE
-$Recommendations = Get-SQLDiagRecommendations 
-Get-SQLDiagLatestCU -Recommendations $Recommendations 
+Get-SQLDiagProduct 2012 | Get-SQLDiagLatestCU
 
-Returns Product Name, Cumulative Update Name and Date created for all products from the SQL Server Diagnostic API
-
-.EXAMPLE
-$Recommendations = Get-SQLDiagRecommendations 
-Get-SQLDiagLatestCU -Recommendations $Recommendations 
-
-Returns Product Name, Cumulative Update Name and Date created for all products from the SQL Server Diagnostic API
+Returns Product Name, Cumulative Update Name and Date created for products named 2012 from the SQL Server Diagnostic API
 
 .EXAMPLE
 Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3'
@@ -60,19 +53,22 @@ SQL Server Diagnostic API
 .EXAMPLE
 Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' -LearnMore
 
-Opens the Cumulative Update for SQL Server 2012 SP3 information webpage int eh default browser
+Opens the Cumulative Update for SQL Server 2012 SP3 information webpage in the default browser
 
 .EXAMPLE
 Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' -Download
 
-Opens the Cumulative Update for SQL Server 2012 SP3 download webpage int eh default browser
+Opens the Cumulative Update for SQL Server 2012 SP3 download webpage in the default browser
 
 .EXAMPLE
-$product =  Get-SQLDiagProduct -Product 2016
-Get-SQLDiagLatestCU -Product $product
+Get-SQLDiagProduct 2012 | Get-SQLDiagLatestCU -LearnMore
 
-Returns Product Name, Cumulative Update Name and Date created for products with 2016 in the name from the 
-SQL Server Diagnostic API
+Opens the Cumulative Update for SQL Server 2012 SP3 information webpage in the default browser
+
+.EXAMPLE
+Get-SQLDiagProduct 2012 | Get-SQLDiagLatestCU -Download
+
+Opens the Cumulative Update for SQL Server 2012 SP3 download webpage in the default browser
 
 .EXAMPLE
 Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1' | Out-GridView
@@ -101,11 +97,10 @@ function Get-SQLDiagLatestCU {
     [cmdletbinding()]
     Param(
         [parameter(ValueFromPipelineByPropertyName, 
-            ValueFromPipeline,
             Mandatory = $false)]
         [ValidateNotNull()]
         [pscustomobject] $Recommendations = (Get-SQLDiagRecommendations),
-        [parameter(Mandatory = $false)]
+        [parameter(Mandatory = $false, ValueFromPipeline =$true, Position = 0)]
         [ValidateScript( {Get-SQLDiagProduct})]
         [String[]]$Product,
         [switch]$LearnMore,
