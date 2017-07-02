@@ -169,13 +169,16 @@ InModuleScope -ModuleName SQLDiagAPI {
             It "Accepts Recommendations input via Parameter" {
                 Get-SQLDiagProduct -Recommendations $Recommendations -ErrorAction SilentlyContinue| Should Not Be NullOrEmpty
             }
+            It "Accepts Product Search without a parameter name" {
+                Get-SQLDiagProduct 2012 | Should Be "SQL Server 2012 SP3"
+            }
             It "It accepts a string for Product" {
                 {Get-SQLDiagRecommendations | Get-SQLDiagProduct -Product SQL} | Should Not Throw
             }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 7
+                    'Times'       = 8
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
@@ -187,7 +190,7 @@ InModuleScope -ModuleName SQLDiagAPI {
         }
         Context "Output" {
             It "Returns the correct data without a product" {
-                Compare-Object (Get-SQLDiagRecommendations | Get-SQLDiagProduct) $Recommendations.Recommendations.Product | Should BeNullOrEmpty
+                Compare-Object (Get-SQLDiagProduct) $Recommendations.Recommendations.Product | Should BeNullOrEmpty
             }
             It "Returns a single object for a search" {
                 $Results = $Recommendations.Recommendations.Product.Where{$_ -like '*2012*'}
@@ -200,7 +203,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 6
+                    'Times'       = 5
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
