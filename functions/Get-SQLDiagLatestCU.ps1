@@ -97,15 +97,22 @@ function Get-SQLDiagLatestCU {
     ## If anyone know how to do this I would be grateful
     Begin {}
     Process {
+
+        ## We only want one product to open a learnmore web-page
         if($LearnMore -and (!$Product)){
             Write-Warning "The Learn More switch requires a Product so that it only opens one browser window."
             break
         }
+
+        ## If we have one product and the learnmore switch open the web-page
         if($LearnMore -and $Product)
         {
-            Start-Process 'https://google.co.uk'
+            $URL = (($recommendations.Recommendations | Where-Object {$_.Product -eq $product}).Content.ExternalLinks | Where-Object {$_.Rel -eq 'LearnMore'}).Href
+            Start-Process $Url
             break
         }
+
+        ## If no Product specified display information for all Products
         if (!($Product)) {
             foreach ($recommendation in $recommendations.Recommendations) {
                 $ProductName = $recommendation.Product
@@ -118,6 +125,7 @@ function Get-SQLDiagLatestCU {
                 }
             }
         }
+        ## Otherwise display information for specified product
         else {
             foreach ($recommendation in $recommendations.Recommendations | Where-Object {$_.Product -in $Product}) {
                 $ProductName = $recommendation.Product
