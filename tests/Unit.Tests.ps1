@@ -9,7 +9,7 @@ if ((Split-Path $ModuleBase -Leaf) -eq 'Tests') {
 
 Import-Module $ModuleBase\$ModuleName.psd1 -ErrorAction Stop #| Out-Null
 InModuleScope -ModuleName SQLDiagAPI {
-    Describe "Get-SQLDiagRecommendations" -Tags Build , Unit {
+    Describe "Get-SQLDiagRecommendations" -Tags Build , Unit, Recommendations {
 
         Context "Requirements" {
             BeforeAll {
@@ -54,7 +54,7 @@ InModuleScope -ModuleName SQLDiagAPI {
         }
     }
 
-    Describe "Get-SQLDiagLatestCU" -Tags Build , Unit {
+    Describe "Get-SQLDiagLatestCU" -Tags Build , Unit,LatestCUs {
         BeforeAll {
             $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
             Mock Get-SQLDiagRecommendations {$Recommendations}
@@ -169,7 +169,7 @@ InModuleScope -ModuleName SQLDiagAPI {
         }
     }
 
-    Describe "Get-SQLDiagProduct" -Tags Build , Unit {
+    Describe "Get-SQLDiagProduct" -Tags Build , Unit,Product {
         BeforeAll {
             $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
             Mock Get-SQLDiagRecommendations {$Recommendations}
@@ -226,7 +226,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             }
         }
     }
-    Describe "Get-SQLDiagFeature" -Tags Build , Unit {
+    Describe "Get-SQLDiagFeature" -Tags Build , Unit, Feature {
         BeforeAll {
             $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
             Mock Get-SQLDiagRecommendations {$Recommendations}
@@ -246,10 +246,6 @@ InModuleScope -ModuleName SQLDiagAPI {
                 Get-SQLDiagFeature -Product 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
                 {Get-SQLDiagFeature -Product 'SQL Server 2012 SP3' } | Should Not throw
             }
-            It "Accepts Product without a Parameter name" {
-                Get-SQLDiagFeature 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
-                {Get-SQLDiagFeature  'SQL Server 2012 SP3' } | Should Not throw
-            }
             It "Accepts single product from the pipeline" {
                 Get-SQLDiagProduct 2012 | Get-SQLDiagFeature | Should Not BeNullOrEmpty
                 {Get-SQLDiagProduct 2012 | Get-SQLDiagFeature} | Should Not throw
@@ -258,10 +254,30 @@ InModuleScope -ModuleName SQLDiagAPI {
                 Get-SQLDiagProduct 2014 | Get-SQLDiagFeature | Should Not BeNullOrEmpty
                 {Get-SQLDiagProduct 2014 | Get-SQLDiagFeature} | Should Not throw
             }
+            It "Accepts Feature search by Parameter" {
+                Get-SQLDiagFeature -Feature Always | Should Not BeNullOrEmpty
+                {Get-SQLDiagFeature -Feature Always } | Should Not throw
+            }
+            It "Accepts Feature search by Parameter with Product by pipeline" {
+                Get-SQLDiagProduct 2012 | Get-SQLDiagFeature -Feature Always | Should Not BeNullOrEmpty
+                {Get-SQLDiagProduct 2012 |Get-SQLDiagFeature -Feature Always } | Should Not throw
+            }
+            It "Accepts Product and Feature search by Parameter" {
+                Get-SQLDiagFeature -Product 'SQL Server 2012 SP3' -Feature Always | Should Not BeNullOrEmpty
+                {Get-SQLDiagFeature -Product 'SQL Server 2012 SP3' -Feature Always } | Should Not throw
+            }
+            It "Accepts Product and Feature search without Parameter" {
+                Get-SQLDiagFeature -Product 'SQL Server 2012 SP3' Always | Should Not BeNullOrEmpty
+                {Get-SQLDiagFeature -Product 'SQL Server 2012 SP3' Always } | Should Not throw
+            }
+            It "Accepts Feature search without Parameter with Product by pipeline" {
+                Get-SQLDiagProduct 2012 | Get-SQLDiagFeature Always | Should Not BeNullOrEmpty
+                {Get-SQLDiagProduct 2012 |Get-SQLDiagFeature Always } | Should Not throw
+            }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 29
+                    'Times'       = 47
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
@@ -271,7 +287,8 @@ InModuleScope -ModuleName SQLDiagAPI {
         Context "Execution" {
 
         }
-        Context "Output" {           
+        Context "Output" {     
+
             It "With No parameter returns a unique list of features" {
                 $Results = (Get-Content $PSScriptRoot\json\Features.JSON) -join "`n" | ConvertFrom-Json
                 Compare-Object (Get-SQLDiagFeature) $results | Should BeNullOrEmpty
@@ -296,14 +313,41 @@ InModuleScope -ModuleName SQLDiagAPI {
                 $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
                 $results = $features.Where{$_.Product -in $ProductName} | Select-Object Feature -Unique -ExpandProperty Feature 
                 Compare-Object (Get-SQLDiagFeature -Product $ProductName) $results | Should BeNullOrEmpty}
+            It "Should return the correct result for a feature search without a product"{
+                $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
+                $results = $features.Where{$_.Feature -like '*Al*'} | Select-Object Feature -Unique -ExpandProperty Feature
+                Compare-Object (Get-SQLDiagFeature -Feature Al) $results | Should BeNullOrEmpty
+            }
+            $TestCases = @{ ProductName = 'SQL Server 2012 SP3'},
+            @{ ProductName = 'SQL Server 2016 SP1'},
+            @{ ProductName = 'SQL Server 2016 RTM'},
+            @{ ProductName = 'SQL Server 2014 SP1'}, 
+            @{ ProductName = 'SQL Server 2014 SP2'} 
+            It "Should return the correct result for a feature search with a single product <ProductName>" -TestCases $TestCases{
+                param($productname)
+                $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
+                $results = $features.Where{$_.Product -in $ProductName -and $_.Feature -like '*Al*'} | Select-Object Feature -Unique -ExpandProperty Feature
+                Compare-Object (Get-SQLDiagProduct $productname | Get-SQLDiagFeature -Feature Al) $results | Should BeNullOrEmpty
+            }
+            $TestCases = @{ ProductName = '2012'},
+            @{ ProductName = '2014'},
+            @{ ProductName = '2016'}
+            It "Should Return the correct result for a feature search for multiple Products <ProductName>" -TestCases $TestCases {
+                Param($ProductName)
+                $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
+                $results = $features.Where{$_.Product -like "*$($ProductName)*" -and $_.Feature -like '*Al*'} | Select-Object Feature -Unique -ExpandProperty Feature
+                Compare-Object (Get-SQLDiagProduct $productname | Get-SQLDiagFeature -Feature Al) $results | Should BeNullOrEmpty
+            }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 29
+                    'Times'       = 56
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
             }
         }
     }
+
+
 }
