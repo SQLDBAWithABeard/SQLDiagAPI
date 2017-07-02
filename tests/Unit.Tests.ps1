@@ -323,7 +323,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             @{ ProductName = 'SQL Server 2016 RTM'},
             @{ ProductName = 'SQL Server 2014 SP1'}, 
             @{ ProductName = 'SQL Server 2014 SP2'} 
-            It "Should return the correct result for a feature search with a single product <ProductName>" -TestCases $TestCases{
+            It "Should return the correct result for a feature search with a single product from the pipeline <ProductName>" -TestCases $TestCases{
                 param($productname)
                 $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
                 $results = $features.Where{$_.Product -in $ProductName -and $_.Feature -like '*Al*'} | Select-Object Feature -Unique -ExpandProperty Feature
@@ -331,8 +331,19 @@ InModuleScope -ModuleName SQLDiagAPI {
             }
             $TestCases = @{ ProductName = '2012'},
             @{ ProductName = '2014'},
-            @{ ProductName = '2016'}
-            It "Should Return the correct result for a feature search for multiple Products <ProductName>" -TestCases $TestCases {
+            @{ ProductName = '2016'},
+            @{ ProductName = 'SP1'}
+            It "Should Return the correct result for all features from the pipeline for multiple Products <ProductName>" -TestCases $TestCases {
+                Param($ProductName)
+                $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
+                $results = $features.Where{$_.Product -like "*$($ProductName)*" } | Select-Object Feature -Unique -ExpandProperty Feature
+                Compare-Object (Get-SQLDiagProduct $productname | Get-SQLDiagFeature) $results | Should BeNullOrEmpty
+            }
+            $TestCases = @{ ProductName = '2012'},
+            @{ ProductName = '2014'},
+            @{ ProductName = '2016'},
+            @{ ProductName = 'SP1'}
+            It "Should Return the correct result for a feature search from the pipeline for multiple Products <ProductName>" -TestCases $TestCases {
                 Param($ProductName)
                 $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
                 $results = $features.Where{$_.Product -like "*$($ProductName)*" -and $_.Feature -like '*Al*'} | Select-Object Feature -Unique -ExpandProperty Feature
@@ -341,7 +352,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 56
+                    'Times'       = 75
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
