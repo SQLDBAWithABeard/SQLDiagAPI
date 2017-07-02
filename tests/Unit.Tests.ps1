@@ -71,13 +71,19 @@ InModuleScope -ModuleName SQLDiagAPI {
             It "Learnmore switch throws a warning if no Product specified" {
                 Get-SQLDiagLatestCU -LearnMore | Should Be "warning"
             }
+            It "Learnmore switch throws a warning if multiple Products specified" {
+                Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3', 'SQL Server 2014 SP1' -LearnMore | Should Be "warning"
+            }
             It "Download switch throws a warning if no Product specified" {
                 Get-SQLDiagLatestCU -Download | Should Be "warning"
+            }
+            It "Download switch throws a warning if multiple Products specified" {
+                Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1' -Download | Should Be "warning"
             }
             It 'Checks the Mock was called for Write-Warning' {
                 $assertMockParams = @{
                     'CommandName' = 'Write-Warning'
-                    'Times'       = 2
+                    'Times'       = 4
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
@@ -85,7 +91,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 5
+                    'Times'       = 12
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
