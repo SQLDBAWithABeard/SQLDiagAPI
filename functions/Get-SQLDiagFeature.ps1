@@ -12,22 +12,24 @@ The recommendation object from the API - Use Get-SQLDiagRecommendations by defau
 .PARAMETER Product
 The product or products that you want to filter by Get-SQLDiagProduct will show the options
 
+.PARAMETER Feature
+Wildcard case insensitive search for feature name
+
 .EXAMPLE
 Get-SQLDiagFeature
 
 This will return a unique list of all of the Feature Areas that have fixes from the SQL Server Diagnostic API
 
- .EXAMPLE
+.EXAMPLE
+Get-SQLDiagFeature -Feature Always
+
+This will return a unique list of all of the Feature Areas that have fixes from the SQL Server Diagnostic API 
+with a name including Always (case insensitive)
+
+.EXAMPLE
 Get-SQLDiagFeature -Product 'SQL Server 2012 SP3'
 
 This will return a unique list of all of the Feature Areas that have fixes for the product SQL Server 2012 SP3
-from the SQL Server Diagnostic API
-
-.EXAMPLE
-$product =  Get-SQLDiagProduct -Product 2016
-Get-SQLDiagFeature -Product $product
-
-This will return a unique list of all of the Feature Areas that have fixes for products with 2016 in the name 
 from the SQL Server Diagnostic API
 
 .EXAMPLE
@@ -35,6 +37,12 @@ Get-SQLDiagProduct 2016 | Get-SQLDiagFeature
 
 This will return a unique list of all of the Feature Areas that have fixes for products with 2016 in the name 
 from the SQL Server Diagnostic API
+
+.EXAMPLE
+Get-SQLDiagProduct 2016 | Get-SQLDiagFeature Always
+
+This will return a unique list of all of the Feature Areas that have fixes for products with 2016 in the name 
+and features with Always in the name (case insensitive) from the SQL Server Diagnostic API
 
 .NOTES
     AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
@@ -47,34 +55,48 @@ function Get-SQLDiagFeature {
             Mandatory = $false)]
         [ValidateNotNull()]
         [pscustomobject] $Recommendations = (Get-SQLDiagRecommendations),
-        [parameter(Mandatory = $false, ValueFromPipeline = $true, Position = 0)]
+        [parameter(Mandatory = $false, ValueFromPipeline = $true)]
         [ValidateScript( {Get-SQLDiagProduct})]
-        [String[]]$Product
+        [string[]]$Product,
+        [parameter(Mandatory = $false, Position = 0)]
+        [String[]]$Feature
     )
+    # Define empoty features array
     $features = @()
+    
+    # If no product grab all of the features and add them to the features array if not already there
     if (!($Product)) {
         foreach ($recommendation in $recommendations.Recommendations) {
             foreach ($fix in $recommendation.Content.RelevantFixes) {
-                $feature = $fix.Title
-                if ($features -notcontains $feature) {
-                    $Features += $Feature
+                $feat = $fix.Title
+                if ($features -notcontains $feat) {
+                    $Features += $Feat
                 }
             }
         }
     }
     else {
+         # If product grab all of the features for that product and add them to the features array if not already there
         foreach ($P in $Product) {
             foreach ($recommendation in $recommendations.Recommendations) {
                 $Products = $recommendation.Product
                 if ($products -notcontains $p) {continue}
                 foreach ($fix in $recommendation.Content.RelevantFixes) {
-                    $feature = $fix.Title
-                    if ($features -notcontains $feature) {
-                        $Features += $Feature
+                    $feat = $fix.Title
+                    if ($features -notcontains $feat) {
+                        $Features += $Feat
                     }
                 }
             }
         }
     }
-    $features | Sort-Object
+    ## if feature search return only features that match the search term alphabetically
+    if ($Feature) {
+        $features | Where-Object {$_ -like "*$($Feature)*"} | Sort-Object
+    }
+    ## otherwise return the lot alphabetically
+    else {
+         $features | Sort-Object
+    }
+   
 }
