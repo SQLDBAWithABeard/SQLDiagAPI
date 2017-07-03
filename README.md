@@ -22,6 +22,8 @@ To understand how best to use the commands please run
 
 This will show you details and plenty of examples
 
+You can also find the documentation for the commands [here](docs)
+
 ### Get-SQLRecommendations
 
 [This function](functions\Get-SQLRecommendations.ps1) connects to the SQL Server Diagnostic Recommendations API and returns a PSCustomObject 
