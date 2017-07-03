@@ -24,9 +24,17 @@ This will show you details and plenty of examples
 
 You can also find the documentation for the commands [here](docs)
 
-### Get-SQLRecommendations
+### Get-SQLDiagFix
 
-[This function](functions\Get-SQLRecommendations.ps1) connects to the SQL Server Diagnostic Recommendations API and returns a PSCustomObject 
+[This function](functions\Get-SQLDiagFix.ps1) connects to the SQL Server Diagnostic Recommendations API and returns the Fixes for the latest Cumulative Update by Product or Feature Area or both.
+
+The video below shows how it works 
+
+[![Alt text](https://img.youtube.com/vi/gRDM7WUeWkQ/0.jpg)](https://www.youtube.com/watch?v=gRDM7WUeWkQ)
+
+### Get-SQLDiagRecommendations
+
+[This function](functions\Get-SQLDiagRecommendations.ps1) connects to the SQL Server Diagnostic Recommendations API and returns a PSCustomObject 
 with information about the latest Cumulative Updates for various SQL Server Versions. 
 Details here https://ecsapi.portal.azure-api.net/
 
