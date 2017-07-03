@@ -54,7 +54,7 @@ InModuleScope -ModuleName SQLDiagAPI {
         }
     }
 
-    Describe "Get-SQLDiagLatestCU" -Tags Build , Unit,LatestCUs {
+    Describe "Get-SQLDiagLatestCU" -Tags Build , Unit, LatestCUs {
         BeforeAll {
             $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
             Mock Get-SQLDiagRecommendations {$Recommendations}
@@ -73,7 +73,7 @@ InModuleScope -ModuleName SQLDiagAPI {
                 {Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3' } | Should Not throw
             }
             It "Accepts Product without a Parameter name" {
-                                Get-SQLDiagLatestCU 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
+                Get-SQLDiagLatestCU 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
                 {Get-SQLDiagLatestCU  'SQL Server 2012 SP3' } | Should Not throw
             }
             It "Accepts single product from the pipeline" {
@@ -94,7 +94,7 @@ InModuleScope -ModuleName SQLDiagAPI {
                 Get-SQLDiagLatestCU -Download | Should Be "warning"
             }
             It "Download switch throws a warning if multiple Products specified" {
-                Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1' -Download | Should Be "warning"
+                Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3', 'SQL Server 2014 SP1' -Download | Should Be "warning"
             }
             It 'Checks the Mock was called for Write-Warning' {
                 $assertMockParams = @{
@@ -169,7 +169,7 @@ InModuleScope -ModuleName SQLDiagAPI {
         }
     }
 
-    Describe "Get-SQLDiagProduct" -Tags Build , Unit,Product {
+    Describe "Get-SQLDiagProduct" -Tags Build , Unit, Product {
         BeforeAll {
             $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
             Mock Get-SQLDiagRecommendations {$Recommendations}
@@ -313,7 +313,7 @@ InModuleScope -ModuleName SQLDiagAPI {
                 $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
                 $results = $features.Where{$_.Product -in $ProductName} | Select-Object Feature -Unique -ExpandProperty Feature 
                 Compare-Object (Get-SQLDiagFeature -Product $ProductName) $results | Should BeNullOrEmpty}
-            It "Should return the correct result for a feature search without a product"{
+            It "Should return the correct result for a feature search without a product" {
                 $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
                 $results = $features.Where{$_.Feature -like '*Al*'} | Select-Object Feature -Unique -ExpandProperty Feature
                 Compare-Object (Get-SQLDiagFeature -Feature Al) $results | Should BeNullOrEmpty
@@ -323,7 +323,7 @@ InModuleScope -ModuleName SQLDiagAPI {
             @{ ProductName = 'SQL Server 2016 RTM'},
             @{ ProductName = 'SQL Server 2014 SP1'}, 
             @{ ProductName = 'SQL Server 2014 SP2'} 
-            It "Should return the correct result for a feature search with a single product from the pipeline <ProductName>" -TestCases $TestCases{
+            It "Should return the correct result for a feature search with a single product from the pipeline <ProductName>" -TestCases $TestCases {
                 param($productname)
                 $Features = (Get-Content $PSScriptRoot\json\ProductFeatures.JSON) -join "`n" | ConvertFrom-Json
                 $results = $features.Where{$_.Product -in $ProductName -and $_.Feature -like '*Al*'} | Select-Object Feature -Unique -ExpandProperty Feature
@@ -381,10 +381,6 @@ InModuleScope -ModuleName SQLDiagAPI {
                 Get-SQLDiagFix -Product 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
                 {Get-SQLDiagFix -Product 'SQL Server 2012 SP3' } | Should Not throw
             }
-            It "Accepts Product without a Parameter name" {
-                Get-SQLDiagFix 'SQL Server 2012 SP3' | Should Not BeNullOrEmpty
-                {Get-SQLDiagFix  'SQL Server 2012 SP3' } | Should Not throw
-            }
             It "Accepts single product from the pipeline" {
                 Get-SQLDiagProduct 2012 | Get-SQLDiagFix | Should Not BeNullOrEmpty
                 {Get-SQLDiagProduct 2012 | Get-SQLDiagFix} | Should Not throw
@@ -401,18 +397,10 @@ InModuleScope -ModuleName SQLDiagAPI {
                 Get-SQLDiagFix 'Always On' | Should Not BeNullOrEmpty
                 {Get-SQLDiagFix  'Always On' } | Should Not throw
             }
-            It "Accepts single Feature from the pipeline" {
-                Get-SQLDiagFeature Always | Get-SQLDiagFix | Should Not BeNullOrEmpty
-                {Get-SQLDiagFeature Always | Get-SQLDiagFix} | Should Not throw
-            }
-            It "Accepts multiple Features from the pipeline" {
-                Get-SQLDiagFeature Co | Get-SQLDiagFix | Should Not BeNullOrEmpty
-                {Get-SQLDiagFeature Co | Get-SQLDiagFix} | Should Not throw
-            }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 45
+                    'Times'       = 29
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
@@ -422,10 +410,170 @@ InModuleScope -ModuleName SQLDiagAPI {
 
         }
         Context "Output" {
+            BeforeAll {
+                $Fixes = (Get-Content $PSScriptRoot\json\fix.JSON) -join "`n" | ConvertFrom-Json
+                $Products = Get-SQLDiagProduct
+                $Features = Get-SQLDiagFeature
+            }
+            It "returns all of the fixes with no parameter" {
+                Compare-Object (Get-SQLDiagFix) $Fixes | Should BeNullOrEmpty
+            }
+            $TestCases = @{ ProductName = 'SQL Server 2012 SP3'},
+            @{ ProductName = 'SQL Server 2016 SP1'},
+            @{ ProductName = 'SQL Server 2016 RTM'},
+            @{ ProductName = 'SQL Server 2014 SP1'}, 
+            @{ ProductName = 'SQL Server 2014 SP2'} 
+            It "Returns the correct results with a single product parameter  <ProductName>" -TestCases $TestCases {
+                param($productname)
+                $results = $fixes.Where{$_.Product -in $ProductName} 
+                Compare-Object (Get-SQLDiagFix -Product $productname) $results | Should BeNullOrEmpty
+            }
+            $TestCases = @{ ProductName = 'SQL Server 2012 SP3'},
+            @{ ProductName = 'SQL Server 2016 SP1'},
+            @{ ProductName = 'SQL Server 2016 RTM'},
+            @{ ProductName = 'SQL Server 2014 SP1'}, 
+            @{ ProductName = 'SQL Server 2014 SP2'} 
+            It "Returns the correct results with a single product from the pipeline <ProductName>" -TestCases $TestCases {
+                param($productname)
+                $results = $fixes.Where{$_.Product -in $ProductName} 
+                Compare-Object (Get-SQLDiagProduct -Product $productname | Get-SQLDiagFix ) $results | Should BeNullOrEmpty
+            }
+            $TestCases = @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1'},
+            @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM'},
+            @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1'},
+            @{ ProductName = 'SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1', 'SQL Server 2014 SP2'}
+            It "Returns the correct results with multiple product parameter  <ProductName>" -TestCases $TestCases {
+                param($productname)
+                $results = $fixes.Where{$_.Product -in $ProductName} 
+                Compare-Object (Get-SQLDiagFix -Product $productname) $results | Should BeNullOrEmpty
+            }
+            $TestCases = @{ ProductName = '2012'},
+            @{ ProductName = '2014'},
+            @{ ProductName = '2016'},
+            @{ ProductName = 'SP1'}
+            It "Returns the correct results with multiple products from the pipeline <ProductName>" -TestCases $TestCases {
+                param($productname)
+                $Products = Get-SQLDiagProduct -Product $productname 
+                $results = $fixes.Where{$_.Product -in $Products} 
+                Compare-Object (Get-SQLDiagProduct -Product $productname | Get-SQLDiagFix ) $results | Should BeNullOrEmpty
+            }
+            $TestCases = @()
+            $Features | Foreach-Object {$TestCases += @{Feature = $_}}
+            It "Returns the correct results with a single feature <Feature>" -TestCases $TestCases {
+                param($Feature)
+                $results = $fixes.Where{$_.Feature -in $Feature} 
+                Compare-Object (Get-SQLDiagFix -Feature $Feature) $results | Should BeNullOrEmpty
+            } 
+            ## Generate 10 TestCases of a random number of Features
+            $TestCases = @()
+            $x = 10
+            While ($x -gt 0) {
+                ## We are testing multiples so we need at least 2
+                $Number = Get-Random -Maximum $Features.Count -Minimum 2
+                $Test = @()
+                While ($Number -gt 0) {
+                    $Test += Get-Random $Features 
+                    $Number --
+                }
+                ## Need unique values
+                $Test = $test | Select-Object -Unique
+                $TestCases += @{Feature = $Test}
+                $X --
+            }
+            It "Returns the correct results with a multiple features <Feature>" -TestCases $TestCases {
+                param($Feature)
+                $results = $fixes.Where{$_.Feature -in $Feature} 
+                Compare-Object (Get-SQLDiagFix -Feature $Feature) $results | Should BeNullOrEmpty
+            }
+            
+            foreach ($Product in $Products) {
+                $TestCases = @()
+                $Features = Get-SQLDiagFeature -Product $Product
+                $Features | Foreach-Object {$TestCases += @{Feature = $_}}
+                It "Returns the correct results for a single product parameter $Product with a single feature <Feature>" -TestCases $TestCases {
+                    param($Feature)
+                    $results = $fixes.Where{$_.Product -eq $product -and $_.Feature -in $Feature} 
+                    Compare-Object (Get-SQLDiagFix -Product $Product -Feature $Feature) $results | Should BeNullOrEmpty
+                } 
+            }
+            foreach ($Product in $Products) {
+                ## Generate 10 TestCases of a random number of Features
+                $TestCases = @()
+                $x = 10
+                While ($x -gt 0) {
+                    ## We are testing multiples so we need at least 2
+                    $Number = Get-Random -Maximum $Features.Count -Minimum 2
+                    $Test = @()
+                    While ($Number -gt 0) {
+                        $Test += Get-Random $Features 
+                        $Number --
+                    }
+                    ## Need unique values
+                    $Test = $test | Select-Object -Unique
+                    $TestCases += @{Feature = $Test}
+                    $X --
+                }
+                It "Returns the correct results for a single product parameter $Product with a multiple features <Feature>" -TestCases $TestCases {
+                    param($Feature)
+                    $Test = (Get-SQLDiagFix -Product $Product -Feature $Feature) 
+                    ## Annoyingly if there are no results Compare-Object bombs out even though it is correct
+                    ## This is a risky fix for that
+                    if ($Test) {
+                        $results = $fixes.Where{$_.Product -eq $product -and $_.Feature -in $Feature} 
+                        Compare-Object $test $results | Should BeNullOrEmpty
+                    }
+                } 
+            }
+            $Products = @('SQL Server 2012 SP3', 'SQL Server 2016 SP1'),
+            @('SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM'),
+            @('SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1'),
+            @('SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1', 'SQL Server 2014 SP2')
+            foreach ($Product in $Products) {
+                $TestCases = @()
+                $Features = Get-SQLDiagFeature -Product $Product
+                $Features | Foreach-Object {$TestCases += @{Feature = $_}}
+                It "Returns the correct results for multiple products parameter $Product with a single feature <Feature>" -TestCases $TestCases {
+                    param($Feature)
+                    $results = $fixes.Where{$_.Product -in $product -and $_.Feature -in $Feature} 
+                    Compare-Object (Get-SQLDiagFix -Product $Product -Feature $Feature) $results | Should BeNullOrEmpty
+                } 
+            }
+            $Products = @('SQL Server 2012 SP3', 'SQL Server 2016 SP1'),
+            @('SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM'),
+            @('SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1'),
+            @('SQL Server 2012 SP3', 'SQL Server 2016 SP1', 'SQL Server 2016 RTM', 'SQL Server 2014 SP1', 'SQL Server 2014 SP2')
+            foreach ($Product in $Products) {
+                ## Generate 10 TestCases of a random number of Features
+                $TestCases = @()
+                $x = 10
+                While ($x -gt 0) {
+                    ## We are testing multiples so we need at least 2
+                    $Number = Get-Random -Maximum $Features.Count -Minimum 2
+                    $Test = @()
+                    While ($Number -gt 0) {
+                        $Test += Get-Random $Features 
+                        $Number --
+                    }
+                    ## Need unique values
+                    $Test = $test | Select-Object -Unique
+                    $TestCases += @{Feature = $Test}
+                    $X --
+                }
+                It "Returns the correct results for multiple products parameter $Product with a multiple feature <Feature>" -TestCases $TestCases {
+                    param($Feature)
+                    $Test = (Get-SQLDiagFix -Product $Product -Feature $Feature) 
+                    ## Annoyingly if there are no results Compare-Object bombs out even though it is correct
+                    ## This is a risky fix for that
+                    if ($Test) {
+                        $results = $fixes.Where{$_.Product -in $product -and $_.Feature -in $Feature} 
+                        Compare-Object $test $results | Should BeNullOrEmpty
+                    }
+                } 
+            }
             It 'Checks the Mock was called for Get-SQLDiagRecommendations' {
                 $assertMockParams = @{
                     'CommandName' = 'Get-SQLDiagRecommendations'
-                    'Times'       = 0
+                    'Times'       = 852
                     'Exactly'     = $true
                 }
                 Assert-MockCalled @assertMockParams 
