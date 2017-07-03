@@ -30,7 +30,7 @@ You can also find the documentation for the commands [here](docs)
 
 The video below shows how it works 
 
-[![Alt text](https://img.youtube.com/vi/gRDM7WUeWkQ/0.jpg)](https://www.youtube.com/watch?v=gRDM7WUeWkQ)
+[![Alt text](https://img.youtube.com/vi/iaPjG38tnPA/0.jpg)](https://youtu.be/iaPjG38tnPA)
 
 ### Get-SQLDiagRecommendations
 
