@@ -359,7 +359,6 @@ InModuleScope -ModuleName SQLDiagAPI {
             }
         }
     }
-
     Describe "Get-SQLDiagFix" -Tags Build , Unit, Fix {
         BeforeAll {
             $Recommendations = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
