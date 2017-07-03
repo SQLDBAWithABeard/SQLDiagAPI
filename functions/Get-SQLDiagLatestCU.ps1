@@ -5,7 +5,7 @@ Gets The Latest Cumulative Updates and Date from the SQL Server Diagnostic API
 .DESCRIPTION
 Returns Product Name, Cumulative Update Name and Date created from the SQL Server Diagnostic API
 Opens the Learn More webpage with the LearnMore switch
-Downloads the CU with teh Download Switch
+Downloads the CU with the Download Switch
 
 .PARAMETER Recommendations
 The recommendation object from the API - Use Get-SQLDiagRecommendations by default
