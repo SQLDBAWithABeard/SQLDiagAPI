@@ -10,6 +10,9 @@ http://sqldbawithabeard.com/2017/06/30/creating-a-powershell-module-and-tdd-for-
 using Get-SQLDiagRecommendations
 http://sqldbawithabeard.com/2017/06/29/powershell-module-for-the-sql-server-diagnostics-api-1st-command-get-sqldiagrecommendations/
 
+Using Get-SQLDiagFix
+https://sqldbawithabeard.com/2017/07/04/using-get-sqldiagfix-to-get-information-from-the-sql-server-diagnostic-api-with-powershell/
+
 ## Installation
 
 Please follow the instructions here [install](install.md)
