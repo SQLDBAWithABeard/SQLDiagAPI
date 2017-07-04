@@ -46,5 +46,5 @@ This will return a unique list of all of the Feature Areas that have fixes for p
 and features with Always in the name (case insensitive) from the SQL Server Diagnostic API
 
 ### NOTES
-    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard### com
+    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard#.com
     DATE    30/06/2017

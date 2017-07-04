@@ -45,5 +45,5 @@ Returns Product Name, Cumulative Update Name and Date created for products with 
 SQL Server Diagnostic API
 
 ### NOTES
-    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard### com
+    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
     DATE    30/06/2017

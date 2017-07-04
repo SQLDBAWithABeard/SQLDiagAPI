@@ -76,7 +76,7 @@ Feature Areas with AL in the name for products with SP1 in the name in the Cumul
 from the SQL Server Diagnostics Recommendations API and displays them in Out-GridView
 
 ### EXAMPLE
-Get-SQLDiagFix | Export-Csv -Path C:\temp\Fixes### csv
+Get-SQLDiagFix | Export-Csv -Path C:\temp\Fixes.csv
 
 Exports the Product Name, Feature Name/Area, KB Number, Title and URL for all of the Fixes in the 
 Cumulative Updates returned from the SQL Server Diagnostics Recommendations API into a File
@@ -87,15 +87,15 @@ Write-DbaDataTable -SqlServer $Server -Database $DB -InputObject $Fixes-Table Fi
 
 Puts the Product Name, Feature Name/Area, KB Number, Title and URL for all of the Fixes in the 
 Cumulative Updates returned from the SQL Server Diagnostics Recommendations API into a 
-database table and creates the table - Requires dbatools https://dbatools### io
+database table and creates the table - Requires dbatools https://dbatools#.io
 
 ### EXAMPLE
-Get-SQLDiagProduct SP1 | Get-SQLDiagFix -Feature (Get-SQLDiagFeature -Feature AL) | Out-GridView -PassThru | ForEach-Object {Start-Process $_### UR}
+Get-SQLDiagProduct SP1 | Get-SQLDiagFix -Feature (Get-SQLDiagFeature -Feature AL) | Out-GridView -PassThru | ForEach-Object {Start-Process $_.URL}
 
 Opens the URL for a Fix that the user chooses from Out-GridView which is populated with all of the Fixes for the
 Feature Areas with AL in the name for products with SP1 in the name in the Cumulative Updates returned
 from the SQL Server Diagnostics Recommendations API 
 
 ### NOTES
-    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard### com
+    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
     DATE    03/07/2017

@@ -18,7 +18,7 @@ The APIKey used to authenticate against the API###  You can get one from https:/
 Get-SQLDiagRecommendations 
 
 Returns an object containing the information about the latest CUs for SQL Server using an API Key stored in 
-the users profile in a file named SQLDiag### Cred
+the users profile in a file named SQLDiag.Cred
 
 ### EXAMPLE
 $APIKey = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
@@ -27,5 +27,5 @@ Get-SQLDiagRecommendations -ApiKey $APIKey
 Returns an object containing the information about the latest CUs for SQL Server 
 
 ### NOTES
-    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard### com
+    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
     DATE    28/06/2017

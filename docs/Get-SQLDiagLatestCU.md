@@ -78,10 +78,10 @@ Returns Product Name, Cumulative Update Name and Date created for SQL Server 201
 SQL Server Diagnostic API and outputs to Out-GridView
 
 ### EXAMPLE
-Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1' | Out-File C:\Temp\LatestCU### txt
+Get-SQLDiagLatestCU -Product 'SQL Server 2012 SP3','SQL Server 2014 SP1' | Out-File C:\Temp\LatestCU.txt
 
 Returns Product Name, Cumulative Update Name and Date created for SQL Server 2012 SP3 and SQL Server 2014 SP1 from the 
-SQL Server Diagnostic API and outputs to a File C:\Temp\LatestCU### txt
+SQL Server Diagnostic API and outputs to a File C:\Temp\LatestCU.txt
 
 ### EXAMPLE
 $LatestCu =  Get-SQLDiagLatestCU | Out-DbaDataTable
@@ -91,5 +91,5 @@ Puts Product Name, Cumulative Update Name and Date created for all products from
 SQL Server Diagnostic API into a database table and creates the table - Requires dbatools https://dbatools### io
 
 ### NOTES
-    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard### com
+    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
     DATE    30/06/2017
