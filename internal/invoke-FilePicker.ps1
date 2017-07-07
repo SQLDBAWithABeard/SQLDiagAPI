@@ -13,8 +13,8 @@ function Invoke-FilePicker {
     
     $File = Get-Item $Picker.FileName
     [PSCustomObject] @{
-        FileName = $File.Fullname
-        FileSize = $File.Length / 1MB
+        Fullname = $File.Fullname
+        Length = $File.Length
     }
 
 }
