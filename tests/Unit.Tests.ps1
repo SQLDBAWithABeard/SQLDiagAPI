@@ -579,5 +579,48 @@ InModuleScope -ModuleName SQLDiagAPI {
             }
         }
     }
+    Describe "Get-SQLDiagSupportedRegions" -Tags Build , Unit, Regions {
 
+        Context "Requirements" {
+            BeforeAll {
+                Mock Test-Path {$false}
+                Mock Write-Warning {"Warning"}
+            }
+            It "Should throw a warning if there is no API Key XML File and the APIKey Parameter is not used" {
+                Get-SQLDiagSupportedRegions -ErrorAction SilentlyContinue | Should Be "Warning"
+            }
+            It 'Checks the Mock was called for Test-Path' {
+                $assertMockParams = @{
+                    'CommandName' = 'Test-Path'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Write-Warning' {
+                $assertMockParams = @{
+                    'CommandName' = 'Write-Warning'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+
+        }
+        Context "Input" {
+
+        }
+        Context "Execution" {
+            It "Returns a warning if unable to get Machine GUID" {
+                Mock Get-MachineGUID {} -Verifiable
+                Mock Write-Warning {"Warning"} -Verifiable
+                Get-SQLDiagSupportedRegions -APIKey dummykey | Should Be "Warning"
+                Assert-VerifiableMocks 
+            }
+
+        }
+        Context "Output" {
+        
+        }
+    }
 }
