@@ -636,8 +636,8 @@ InModuleScope -ModuleName SQLDiagAPI {
             Mock ShowDialog {}
 
             It "Returns the File Name and Size" {
-                (Invoke-FilePicker).FileName | Should Be 'C:\Blah\SQLDump011.mdmp'
-                (Invoke-FilePicker).FileSize | Should Be 95.367431640625
+                (Invoke-FilePicker).FullName | Should Be 'C:\Blah\SQLDump011.mdmp'
+                (Invoke-FilePicker).Length | Should Be 100000000
             }
             It 'Checks the Mock was called for New-Object' {
                 $assertMockParams = @{
