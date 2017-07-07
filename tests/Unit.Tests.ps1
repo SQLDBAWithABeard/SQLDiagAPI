@@ -623,4 +623,45 @@ InModuleScope -ModuleName SQLDiagAPI {
         
         }
     }
+    Describe "Invoke-FilePicker" -Tags Build , Unit, Picker {
+
+        BeforeAll {}
+        Context "Input" {}
+        Context "Execution" {}
+        Context "Output" {
+            Mock Get-Item { [pscustomobject]@{FullName = 'C:\Blah\SQLDump011.mdmp'
+        Length = 100000000}}
+            Mock New-Object {[pscustomobject]@{FileName = 'Dummy'}}
+            Mock ShowDialog {}
+
+            It "Returns the File Name and Size" {
+                (Invoke-FilePicker).FileName | Should Be 'C:\Blah\SQLDump011.mdmp'
+                (Invoke-FilePicker).FileSize | Should Be 95.367431640625
+            }
+            It 'Checks the Mock was called for New-Object' {
+                $assertMockParams = @{
+                    'CommandName' = 'New-Object'
+                    'Times'       = 2
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for ShowDialog' {
+                $assertMockParams = @{
+                    'CommandName' = 'ShowDialog'
+                    'Times'       = 2
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Get-Item' {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-Item'
+                    'Times'       = 2
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }    
+        }
+    }
 }
