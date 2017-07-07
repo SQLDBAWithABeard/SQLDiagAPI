@@ -630,7 +630,8 @@ InModuleScope -ModuleName SQLDiagAPI {
         Context "Execution" {}
         Context "Output" {
             Mock Get-Item { [pscustomobject]@{FullName = 'C:\Blah\SQLDump011.mdmp'
-        Length = 100000000}}
+                    Length                             = 100000000
+                }}
             Mock New-Object {[pscustomobject]@{FileName = 'Dummy'}}
             Mock ShowDialog {}
 
@@ -663,5 +664,30 @@ InModuleScope -ModuleName SQLDiagAPI {
                 Assert-MockCalled @assertMockParams 
             }    
         }
+    }
+    Describe "Get-SQLDiagDumpFile" -Tags Build , Unit, DumpFIle {
+        BeforeAll {}
+        Context "Input" {
+
+        }
+        Context "Execution" {
+            It "Should call Invoke-FilePicker if no File paramater" {
+                Mock Invoke-FilePicker {}
+                Get-SQLDiagDumpFile | Out-Null
+                $assertMockParams = @{
+                    'CommandName' = 'Invoke-FilePicker'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+        }
+        Context "Output" {}
+    }
+    Describe "Template" -Tags Build , Unit, Template {
+        BeforeAll {}
+        Context "Input" {}
+        Context "Execution" {}
+        Context "Output" {}
     }
 }
