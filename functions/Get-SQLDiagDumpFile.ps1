@@ -1,13 +1,25 @@
+
 function Get-SQLDiagDumpFile {
     param(
+        [parameter(ValueFromPipelineByPropertyName, 
+            Mandatory = $false)]
+        [ValidateScript({Test-Path -Path $_})]
         [string]$file
         )
     Begin{
-        if(!$file)
-        {
-            $file = Invoke-FilePicker
+    }
+    Process{
+        if (!$file) {
+            $DumpFile = Invoke-FilePicker
+        }
+        else {
+            $DumpFile = Get-Item $File
+        }
+
+        [pscustomobject]@{
+            FilePath = $DumpFile.FullName
+            Size     = $DumpFile.Length /1MB
         }
     }
-    Process{}
     End{}
 }
