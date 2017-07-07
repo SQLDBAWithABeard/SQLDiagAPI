@@ -668,7 +668,39 @@ InModuleScope -ModuleName SQLDiagAPI {
     Describe "Get-SQLDiagDumpFile" -Tags Build , Unit, DumpFIle {
         BeforeAll {}
         Context "Input" {
-
+            Mock Invoke-FilePicker {}
+            Mock Get-Item {}
+            Mock Test-Path {$true}
+            It "Should accept no parameter" {
+                {Get-SQLDiagDumpFile} | Should Not Throw
+            }
+            It "Should accept a file parameter" {
+                {Get-SQLDiagDumpFile -file DUmmy } | Should Not Throw
+            }
+            It "Assert mocks for Invoke-FilePicker" {
+                $assertMockParams = @{
+                    'CommandName' = 'Invoke-FilePicker'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It "Assert mocks for Get-Item" {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-Item'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It "Assert mocks for Test-Path" {
+                $assertMockParams = @{
+                    'CommandName' = 'Test-Path'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
         }
         Context "Execution" {
             It "Should call Invoke-FilePicker if no File paramater" {
@@ -682,8 +714,54 @@ InModuleScope -ModuleName SQLDiagAPI {
                 Assert-MockCalled @assertMockParams 
             }
         }
-        Context "Output" {}
+        Context "Output" {
+            BeforeAll {
+                Mock Invoke-FilePicker { [pscustomobject]@{FullName = 'C:\Blah\SQLDump011.mdmp'
+                        Length                                      = 100000000
+                    }
+                }
+                Mock Get-Item { [pscustomobject]@{FullName = 'C:\Blah\SQLDump011.mdmp'
+                        Length                             = 100000000
+                    }
+                }
+                Mock Test-Path {$true}
+                $FileObject = [pscustomobject]@{FullName = 'C:\Blah\SQLDump011.mdmp'
+                    Length                               = 95.367431640625
+                }
+            }
+            It "Returns File Name and Size without file parameter" {
+                Compare-Object (Get-SQLDiagDumpFile) $FileObject | Should BeNullOrEmpty 
+            }
+            It "Returns File Name and Size with a file parameter" {
+                Compare-Object (Get-SQLDiagDumpFile -file Dummy) $FileObject | Should BeNullOrEmpty 
+            }
+            It "Assert mocks for Invoke-FilePicker" {
+                $assertMockParams = @{
+                    'CommandName' = 'Invoke-FilePicker'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It "Assert mocks for Get-Item" {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-Item'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It "Assert mocks for Test-Path" {
+                $assertMockParams = @{
+                    'CommandName' = 'Test-Path'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+        }
     }
+
     Describe "Template" -Tags Build , Unit, Template {
         BeforeAll {}
         Context "Input" {}
