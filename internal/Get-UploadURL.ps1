@@ -1,3 +1,8 @@
+##############################
+#.SYNOPSIS
+# Internal Function to return the URL from the API for uploading the file
+#
+##############################
 function Get-UploadURL{
     [cmdletbinding(SupportsShouldProcess = $true)]
     param( 
@@ -7,16 +12,17 @@ function Get-UploadURL{
         [string]$Region,
         [string]$Email
         )
+            $size = $File.Length/1MB
             $UploadAPIURL = 'https://ecsapi.azure-api.net/DiagnosticAnalysis/SQLAnalysis/GetUploadUrl'
         $headers = @{ "Ocp-Apim-Subscription-Key" = $apiKey }        
         $Body = 
         @{
             clientId          = $MachineGUID
-            fileName          = $File.FilePath
+            fileName          = $File.FullName
             region            = $Region
             notificationEmail = $Email
             metadata          = @{
-                fileSize = "$($File.Size) MB"
+                fileSize = "$size MB"
             }
         } | ConvertTo-Json
 
