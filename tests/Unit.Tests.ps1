@@ -50,7 +50,11 @@ InModuleScope -ModuleName SQLDiagAPI {
 
         }
         Context "Output" {
-        
+            $Results = (Get-Content $PSScriptRoot\json\recommendations.JSON) -join "`n" | ConvertFrom-Json
+        Mock Invoke-WebRequest {$Results}
+        It "Should return the correct results" {
+            Compare-Object (Get-SQLDiagRecommendations) $Results | Should BeNullOrEmpty
+        }
         }
     }
 
@@ -761,7 +765,132 @@ InModuleScope -ModuleName SQLDiagAPI {
             }
         }
     }
+    Describe "Invoke-SQLDumpAnalysis" -Tags Build , Unit, Invoke {
+        BeforeAll {}
+        Context "Requirements" {
+            BeforeAll {
+                Mock Write-Warning {"Warning"}
+            }
+            It "Should throw a warning if there is no API Key XML File and the APIKey Parameter is not used" {
+                Mock Test-Path {$false} -ParameterFilter {$Path -eq "${env:\userprofile}\SQLDiag.Cred"}
+                Mock Get-SQLDiagSupportedRegions {'West US'}            
+                Invoke-SQLDiagDumpAnalysis -File File -Region 'West US' -email a@a.com -ErrorAction SilentlyContinue | Should Be "Warning"
+            }
+            It 'Checks the Mock was called for Test-Path' {
+                $assertMockParams = @{
+                    'CommandName' = 'Test-Path'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Get-SQLDiagSupportedRegions' {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-SQLDiagSupportedRegions'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Write-Warning' {
+                $assertMockParams = @{
+                    'CommandName' = 'Write-Warning'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
 
+        }
+        Context "Input" {
+            BeforeAll{
+                Mock Test-Path {$true}
+                Mock Get-SQLDiagSupportedRegions {'West US'}    
+            }
+            It "Should get file information if file path as string passed as parameter" {
+                Mock Get-Item {New-Object System.IO.FileInfo ('File') }
+                Mock Invoke-WebRequest {'Something to fill $response'}
+                Mock Get-MachineGUID {}
+                Mock Import-Clixml {
+                    $secpasswd = ConvertTo-SecureString "password" -AsPlainText -Force
+                    New-Object System.Management.Automation.PSCredential ("username", $secpasswd)
+                }
+                Invoke-SQLDiagDumpAnalysis -verbose -File File -Region 'West US' -email a@a.com -ErrorAction SilentlyContinue 
+                $assertMockParams = @{
+                    'CommandName' = 'Get-Item'
+                    'Times' = 1
+                    'Exactly' = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }                     
+            It 'Checks the Mock was called for Test-Path' {
+                $assertMockParams = @{
+                    'CommandName' = 'Test-Path'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Get-SQLDiagSupportedRegions' {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-SQLDiagSupportedRegions'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Import-CliXml' {
+                $assertMockParams = @{
+                    'CommandName' = 'Import-Clixml'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Get-MachineGUID' {
+                $assertMockParams = @{
+                    'CommandName' = 'Get-MachineGUID'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+        }
+        Context "Execution" {}
+        Context "Output" {}
+    }
+    Describe "Get-SQLDiagAnalysisHistory" -Tags Build , Unit, history {
+        BeforeAll {}
+        Context "Requirements" {
+            BeforeAll {
+                Mock Test-Path {$false}
+                Mock Write-Warning {"Warning"}
+            }
+            It "Should throw a warning if there is no API Key XML File and the APIKey Parameter is not used" {
+                Get-SQLDiagAnalysisHistory -ErrorAction SilentlyContinue | Should Be "Warning"
+            }
+            It 'Checks the Mock was called for Test-Path' {
+                $assertMockParams = @{
+                    'CommandName' = 'Test-Path'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+            It 'Checks the Mock was called for Write-Warning' {
+                $assertMockParams = @{
+                    'CommandName' = 'Write-Warning'
+                    'Times'       = 1
+                    'Exactly'     = $true
+                }
+                Assert-MockCalled @assertMockParams 
+            }
+
+        }
+        Context "Input" {}
+        Context "Execution" {}
+        Context "Output" {}
+    }
     Describe "Template" -Tags Build , Unit, Template {
         BeforeAll {}
         Context "Input" {}
