@@ -26,6 +26,12 @@ Invoke-SQLDiagDumpAnalysis -File c:\temp\SQLDump073.mdmp -Region 'West Us' -Emai
 
 Uploads the file to the API and emails when it has completed
 
+.EXAMPLE
+Get-SQLDiagDumpFile | Invoke-SQLDiagDumpAnalysis -Region 'West US' -Email a@a.com
+
+opens a file picker to choose a file which is then uploaded to teh West US Azure region
+and analysed with the SQL Server Diagnostic API
+
 .NOTES
     AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
     DATE    10/07/2017
