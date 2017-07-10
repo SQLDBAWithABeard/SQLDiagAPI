@@ -1,5 +1,5 @@
 function Get-SQLDiagAnalysisHistory {
-        [cmdletbinding(SupportsShouldProcess = $true)]
+    [cmdletbinding(SupportsShouldProcess = $true)]
     param( 
         [parameter(Mandatory = $false)]
         [ValidateSet('In Progress', 'Failed', 'Suceeded')]
@@ -38,24 +38,25 @@ put a swithc here for the inputs to be abel to combine them
     }
     Process {
                         
-                            try{
-                                Write-Verbose -Message "Getting the Analysis History from the API"
-                                if ($PSCmdlet.ShouldProcess('Analysis History APi', "Getting the Analysis History from the API")) { 
-        $response = Invoke-RestMethod -Method Get -Uri $AnalysisHistoryUrl -Headers $headers -ContentType "application/json"  -ErrorAction Stop
-                             } }
-                            catch{
-                                Write-Warning "Failed to get the Analysis History form the API"
-                Write-Warning -Message "Analysis History URL = $AnalysisHistoryUrl" 
-                Write-Warning -Message "Headers = $headers" 
-                Write-Warning -Message "Body = $Body" 
-                            }
+        try {
+            Write-Verbose -Message "Getting the Analysis History from the API"
+            if ($PSCmdlet.ShouldProcess('Analysis History APi', "Getting the Analysis History from the API")) { 
+                $response = Invoke-RestMethod -Method Get -Uri $AnalysisHistoryUrl -Headers $headers -ContentType "application/json"  -ErrorAction Stop
+            } 
+        }
+        catch {
+            Write-Warning "Failed to get the Analysis History form the API"
+            Write-Warning -Message "Analysis History URL = $AnalysisHistoryUrl" 
+            Write-Warning -Message "Headers = $headers" 
+            Write-Warning -Message "Body = $Body" 
+        }
         if ($status) {
-                Write-Verbose -Message "Filtering By Status $Status"
+            Write-Verbose -Message "Filtering By Status $Status"
             $response | Where-Object {$_.RequestStatus -eq $status}
         }
         elseif ($complete) {
             Write-Verbose -Message "Filtering By Completion $Complete"
-                $response | Where-Object {$_.IsComplete -eq $complete}
+            $response | Where-Object {$_.IsComplete -eq $complete}
 
         }
         elseif ($Since) {
