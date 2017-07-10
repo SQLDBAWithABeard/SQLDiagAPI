@@ -1,25 +1,19 @@
 <#
 .SYNOPSIS
-Returns the File Path and Size in Mb of the dump file
+Gets a SQL Server Dump File for uploading to the API
 
 .DESCRIPTION
-Returns the File Path and Size in Mb of the dump file
-for uploading to the SQL Server Diagnostics Recommendations API
+Gets a SQL Server Dump File for uploading to the API.
+Opens a graphical file picker if no file specified
 
 .PARAMETER file
-The Path to the dump file - If not specfied a file picker 
-dialogue will be shown
+Path to file
 
 .EXAMPLE
-Get-SQLDiagDumpFile
+Get-SQLDiagDumpFile | Invoke-SQLDiagDumpAnalysis -Region 'West US' -Email a@a.com
 
-Opens a file picker diaglogue and returns the File Path and Size in Mb 
-of the chosen file
-
-.EXAMPLE
-Get-SQLDiagDumpFile -File C:\SQLServer\Log\SQLDump011.mdmp
-
-Returns the File Path and Size in Mb of the specified file
+opens a file picker to choose a file which is then uploaded to teh West US Azure region
+and analysed with the SQL Server Diagnostic API
 
 .NOTES
     AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
@@ -43,8 +37,8 @@ function Get-SQLDiagDumpFile {
         }
 
         [pscustomobject]@{
-            FilePath = $DumpFile.FullName
-            Size     = $DumpFile.Length
+            FullName = $DumpFile.FullName
+            Length     = $DumpFile.Length
         }
     }
     End{}
