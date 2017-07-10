@@ -34,6 +34,7 @@ function Invoke-SQLDiagDumpAnalysis {
     [cmdletbinding(SupportsShouldProcess = $true)]
     param(
         [parameter(ValueFromPipelineByPropertyName, 
+            ValueFromPipeline,
             Mandatory = $true)]
         [ValidateNotNull()]
         [object]$File,
@@ -42,7 +43,7 @@ function Invoke-SQLDiagDumpAnalysis {
         [parameter( Mandatory = $true)]
         [ValidateScript( {Get-SQLDiagSupportedRegions})]
         [string]$Region,
-        [parameter( Mandatory = $true)]
+        [parameter( Mandatory = $false)]
         [ValidatePattern('\w+@\w+\.\w+')]
         $Email
     )
