@@ -86,7 +86,6 @@ function Invoke-SQLDiagDumpAnalysis {
             }
             catch {
                 Write-Warning -Message "Failed to get File Information about $File - Quitting"
-                $error[0] | FL -Force
                 break
             }
         }
