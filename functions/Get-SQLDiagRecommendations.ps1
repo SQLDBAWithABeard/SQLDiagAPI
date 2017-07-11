@@ -31,7 +31,7 @@ Returns an object containing the information about the latest CUs for SQL Server
 
 #>
 function Get-SQLDiagRecommendations {
-    [cmdletbinding()]
+    [cmdletbinding(SupportsShouldProcess)]
     Param([string]$ApiKey)
     if (!$ApiKey) {
         Write-Verbose -Message "Getting the APIKey"
