@@ -80,9 +80,9 @@ function Invoke-SQLDiagDumpAnalysis {
             Write-Verbose "Getting File Information about $file"
             try {
                 if ($PSCmdlet.ShouldProcess($env:COMPUTERNAME, "Get information about $File")) { 
-                    Get-SQLDiagDumpFile -file $File
+                   $File =  Get-SQLDiagDumpFile -file $File
                 }
-                Write-Verbose "Got File Information FileName = $File.FileName File Size = $file.FileSize"
+                Write-Verbose "Got File Information FileName = $($File.FullName) File Size = $($file.Length)"
             }
             catch {
                 Write-Warning -Message "Failed to get File Information about $File - Quitting"
@@ -93,7 +93,7 @@ function Invoke-SQLDiagDumpAnalysis {
     Process {
         try {
             Write-Verbose "Get the UploadURL from the API"
-            if ($PSCmdlet.ShouldProcess($($File.FullPath), "Get the UploadURL from the API")) { 
+            if ($PSCmdlet.ShouldProcess($File.FullName, "Get the UploadURL from the API")) { 
                 $UploadResponse = Get-UploadURL -APIKey $APIKey -MachineGUID $MachineGUID -File $File -Region $Region -Email $Email 
                 Write-Verbose "Got the UploadURL $($UploadResponse.UploadURL) for RequestID $($UploadResponse.RequestID) from the API"
             }
@@ -106,19 +106,19 @@ function Invoke-SQLDiagDumpAnalysis {
         $UploadURL = $UploadResponse.UploadURL
         try {
             Write-verbose -Message "Upload the File to storage for analysis"
-            if ($PSCmdlet.ShouldProcess($($File.FullPath), "Upload the File to storage for analysis")) { 
-                Start-FileUpload -Uri $UploadURL -File $File.FullPath -FileSize $File.Size
+            if ($PSCmdlet.ShouldProcess($File.FullName, "Upload the File to storage for analysis")) { 
+                Start-FileUpload -Uri $UploadURL -File $File
             }
         }
         catch {
-            Write-Warning -Message "Failed to upload the File $($File.FullPath) for RequestID $RequestID"
+            Write-Warning -Message "Failed to upload the File $($File.FullName) for RequestID $RequestID"
             break
         }
-        Write-Verbose -Message "Intiating Analysis of Dump File $File"
+        Write-Verbose -Message "Intiating Analysis of Dump File $($File.FullName)"
         try {
-            if ($PSCmdlet.ShouldProcess('SQL Analysis Initiate Analysis', "Intiating Analysis of Dump File $File")) { 
+            if ($PSCmdlet.ShouldProcess($File.FullName, "Intiating Analysis of Dump File")) { 
             
-                Start-FileAnalysis -APIKey $ApiKey -MachineGUID $MachineGUID -RequestID $RequestID
+                $response = Start-FileAnalysis -APIKey $ApiKey -MachineGUID $MachineGUID -RequestID $RequestID
             }
         }
         catch {
@@ -129,7 +129,7 @@ function Invoke-SQLDiagDumpAnalysis {
     End {
 
         If ($response) {
-            Write-Verbose "Successfully invoked Analysis of file $File.FullName with RequestID $RequestID"
+            Write-Verbose "Successfully invoked Analysis of file $($File.FullName) with RequestID $RequestID"
         } 
         else {
             Write-Warning "Failed to Invoke analysis of File $File.FullName"
