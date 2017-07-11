@@ -10,7 +10,7 @@ It requires the APIKey parameter or the APIKey to be stored using Export-CliXML 
 in a file named SQLDiag.Cred
 
 .PARAMETER File
-The Fiile Path or File object of the dump file to be analysed
+The File Path or File object of the dump file to be analysed
 
 .PARAMETER ApiKey
 The APIKey used to authenticate against the API. You can get one from https://ecsapi.portal.azure-api.net/
@@ -29,7 +29,7 @@ Uploads the file to the API and emails when it has completed
 .EXAMPLE
 Get-SQLDiagDumpFile | Invoke-SQLDiagDumpAnalysis -Region 'West US' -Email a@a.com
 
-opens a file picker to choose a file which is then uploaded to teh West US Azure region
+opens a file picker to choose a file which is then uploaded to the West US Azure region
 and analysed with the SQL Server Diagnostic API
 
 .NOTES
