@@ -72,7 +72,7 @@ Returns the SQL Server dump file diagnosis history for dump Analysis since midni
 this machine from the SQL Server Diagnostics API
 
 .NOTES
-AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
+    AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
     DATE    28/06/2017
 #>
 function Get-SQLDiagAnalysisHistory {
