@@ -94,13 +94,13 @@ SQL Server Diagnostic API into a database table and creates the table - Requires
     DATE    30/06/2017
 #> 
 function Get-SQLDiagLatestCU {
-    [cmdletbinding()]
+    [cmdletbinding(SupportsShouldProcess)]
     Param(
         [parameter(ValueFromPipelineByPropertyName, 
             Mandatory = $false)]
         [ValidateNotNull()]
         [pscustomobject] $Recommendations = (Get-SQLDiagRecommendations),
-        [parameter(Mandatory = $false, ValueFromPipeline =$true, Position = 0)]
+        [parameter(Mandatory = $false, ValueFromPipeline = $true, Position = 0)]
         [ValidateScript( {Get-SQLDiagProduct})]
         [String[]]$Product,
         [switch]$LearnMore,
@@ -120,11 +120,19 @@ function Get-SQLDiagLatestCU {
 
         ## If we have one product and the learnmore switch open the web-page
         elseif ($LearnMore -and $Product.Count -eq 1) {
+            Write-Verbose -Message "Opening default browser for latest CU for the product $Product"
             $URL = (($recommendations.Recommendations | Where-Object {$_.Product -eq $product}).Content.ExternalLinks | Where-Object {$_.Rel -eq 'LearnMore'}).Href
-            Start-Process $Url
-            break
+            try {
+                if ($PSCmdlet.ShouldProcess($Url, "Opening Default Browser for the Latest CU")) { 
+                    Start-Process $Url
+                    Write-Verbose -Message "Opened default browser for latest CU for the product $Product"
+                    break
+                }
+            }
+            catch {
+                Write-Warning "Failed to open default browser"
+            }
         }
-
         ## We only want one product to download
         elseif ($Download -and $Product.Count -ne 1) {
             Write-Warning "The Download switch requires a single Product"
@@ -132,12 +140,22 @@ function Get-SQLDiagLatestCU {
         }
         
         elseif ($Download -and $Product.Count -eq 1) {
+            Write-Verbose -Message "Opening default browser for the download page for the product $Product"
             $URL = (($recommendations.Recommendations | Where-Object {$_.Product -eq $product}).Content.ExternalLinks | Where-Object {$_.Rel -eq 'Download'}).Href
-            Start-Process $Url
-            break
+            try {
+                if ($PSCmdlet.ShouldProcess($Url, "Opening Default Browser for the download page")) { 
+                    Start-Process $Url
+                    Write-Verbose -Message "Opened default browser for the download page for the product $Product"
+                    break
+                }
+            }
+            catch {
+                Write-Warning "Failed to open default browser"
+            }
         }
         ## If no Product specified display information for all Products
         elseif (!($Product)) {
+            Write-Verbose -Message "Displaying Latest CU information for All Products"
             foreach ($recommendation in $recommendations.Recommendations) {
                 $ProductName = $recommendation.Product
                 $CU = $recommendation.Title
@@ -148,10 +166,12 @@ function Get-SQLDiagLatestCU {
                     CreatedOn = $CreatedOn
                 }
             }
+            Write-Verbose -Message "Displayed Latest CU information for All Products"
         }
 
         ## Otherwise display information for specified product
         else {
+            Write-Verbose -Message "Displaying Latest CU information for Products $Products"
             foreach ($recommendation in $recommendations.Recommendations | Where-Object {$_.Product -in $Product}) {
                 $ProductName = $recommendation.Product
                 $CU = $recommendation.Title
@@ -162,6 +182,7 @@ function Get-SQLDiagLatestCU {
                     CreatedOn = $CreatedOn
                 }
             }
+            Write-Verbose -Message "Displayed Latest CU information for Products $Products"
         }
     }
 }
