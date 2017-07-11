@@ -61,29 +61,16 @@ function Get-SQLDiagFeature {
         [parameter(Mandatory = $false, Position = 0)]
         [String[]]$Feature
     )
-    Begin{
+    Begin {
         # Define empty features array
         $features = @()
     }
-    Process{
+    Process {
     
-    # If no product grab all of the features and add them to the features array if not already there
-    if (!($Product)) {
-        foreach ($recommendation in $recommendations.Recommendations) {
-            foreach ($fix in $recommendation.Content.RelevantFixes) {
-                $feat = $fix.Title
-                if ($features -notcontains $feat) {
-                    $Features += $Feat
-                }
-            }
-        }
-    }
-    else {
-         # If product grab all of the features for that product and add them to the features array if not already there
-        foreach ($P in $Product) {
+        # If no product grab all of the features and add them to the features array if not already there
+        if (!($Product)) {
+            Write-Verbose -Message "Getting all of the features"
             foreach ($recommendation in $recommendations.Recommendations) {
-                $Products = $recommendation.Product
-                if ($products -notcontains $p) {continue}
                 foreach ($fix in $recommendation.Content.RelevantFixes) {
                     $feat = $fix.Title
                     if ($features -notcontains $feat) {
@@ -91,18 +78,39 @@ function Get-SQLDiagFeature {
                     }
                 }
             }
+            Write-Verbose -Message "Got all of the features"
         }
-    }
+        else {
+            Write-Verbose -Message "Getting all of the features for $Product"
+            # If product grab all of the features for that product and add them to the features array if not already there
+            foreach ($P in $Product) {
+                foreach ($recommendation in $recommendations.Recommendations) {
+                    $Products = $recommendation.Product
+                    if ($products -notcontains $p) {continue}
+                    foreach ($fix in $recommendation.Content.RelevantFixes) {
+                        $feat = $fix.Title
+                        if ($features -notcontains $feat) {
+                            $Features += $Feat
+                        }
+                    }
+                }
+            }
+            Write-Verbose -Message "Got all of the features for $product"
+        }
 
-}
-End{
+    }
+    End {
         ## if feature search return only features that match the search term alphabetically
         if ($Feature) {
+            Write-Verbose -Message "Sorting the Features for $feature"
             $features | Where-Object {$_ -like "*$($Feature)*"} | Sort-Object
+            Write-Verbose -Message "Returnign the Features for $feature"
         }
         ## otherwise return the lot alphabetically
         else {
+            Write-Verbose -Message "Sorting the Features"
             $features | Sort-Object
+            Write-Verbose -Message "Returning the Features"
         }
-}
+    }
 }
