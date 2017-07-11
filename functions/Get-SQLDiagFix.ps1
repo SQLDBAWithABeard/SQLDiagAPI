@@ -115,6 +115,7 @@ function Get-SQLDiagFix {
     Begin {}
     Process {
         if ($Product -and $feature) {
+            Write-Verbose -Message "Getting the fixes for $product and $feature"
             foreach ($P in $Product) {
                 foreach ($recommendation in $recommendations.Recommendations | Where-Object {$_.Product -eq $P}) {
                     $ProductName = $recommendation.Product
@@ -134,8 +135,10 @@ function Get-SQLDiagFix {
                     }
                 }
             }
+            Write-Verbose -Message "Got the fixes for $product and $feature"
         }
         elseif ($Product) {
+            Write-Verbose -Message "Getting the fixes for $product"
             foreach ($P in $Product) {
                 foreach ($recommendation in $recommendations.Recommendations | Where-Object {$_.Product -eq $P}) {
                     $ProductName = $recommendation.Product
@@ -152,9 +155,11 @@ function Get-SQLDiagFix {
                         }
                     }
                 }
+                Write-Verbose -Message "Got the fixes for $product"
             }
         }
         elseif ($feature) {
+            Write-Verbose -Message "Getting the fixes for $feature"
             foreach ($recommendation in $recommendations.Recommendations) {
                 $ProductName = $recommendation.Product
                 foreach ($f in $feature) {
@@ -172,8 +177,10 @@ function Get-SQLDiagFix {
                     }
                 }
             }
+            Write-Verbose -Message "Got the fixes for $feature"
         }
         else {
+            Write-Verbose -Message "Getting all of the fixes"
             foreach ($recommendation in $recommendations.Recommendations) {
                 $ProductName = $recommendation.Product
                 foreach ($fix in $recommendation.Content.RelevantFixes) {
@@ -189,6 +196,7 @@ function Get-SQLDiagFix {
                     }
                 }
             }
+            Write-Verbose -Message "Got all of the fixes"
         }
     }
         

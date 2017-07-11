@@ -61,9 +61,13 @@ function Get-SQLDiagProduct {
         [String]$Product
     )
     if(!($Product)){
+        Write-Verbose -Message "Getting All the Products from the API"
     $recommendations.Recommendations.Product
+        Write-Verbose -Message "Got the Products from the API"
 }
 else{
+        Write-Verbose -Message "Getting the products from the API filtered by $Product"
         $recommendations.Recommendations.Product | Where-Object {$_ -like "*$($Product)*"}
+        Write-Verbose -Message "Got the Products from the API"
 }
 }

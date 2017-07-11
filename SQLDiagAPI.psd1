@@ -12,7 +12,7 @@
     RootModule        = 'SQLDiagAPI.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '0.9.0'
+    ModuleVersion     = '0.9.1'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -69,11 +69,17 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = @('Get-SQLDiagRecommendations'
-        'Get-SQLDiagLatestCU'
-        'Get-SQLDiagProduct'
-        'Get-SQLDiagFeature'
-        'Get-SQLDiagFix')
+    FunctionsToExport = @('Get-SQLDiagAnalysis',
+        'Get-SQLDiagAnalysisHistory',
+        'Get-SQLDiagDumpFile',
+        'Get-SQLDiagFeature',
+        'Get-SQLDiagFix',
+        'Get-SQLDiagLatestAnalysis',
+        'Get-SQLDiagLatestCU',
+        'Get-SQLDiagProduct',
+        'Get-SQLDiagRecommendations',
+        'Get-SQLDiagSupportedRegions',
+        'Invoke-SQLDiagDumpAnalysis')
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()
