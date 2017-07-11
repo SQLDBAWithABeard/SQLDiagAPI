@@ -63,7 +63,7 @@ function Get-SQLDiagRecommendations {
         }
     }
     catch {
-        Write-Warning " Failed to get Latest CUs from the API $APIURL"
+        Write-Warning "Failed to get Latest CUs from the API $APIURL"
     }
     Write-Verbose -Message "Got the Latest CUs"
 }
