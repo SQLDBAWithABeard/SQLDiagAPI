@@ -20,7 +20,7 @@ Returns the Diagnosis analysis for the request id specified
 .EXAMPLE
 Get-SQLDiagAnalysisHistory -Since Yesterday | Out-GridView -PassThru |  Get-SQLDiagAnalysis
 
-Gets the Diagnosis history adn displays it in Out-GridView and then gets the analysis for the 
+Gets the Diagnosis history, displays it in Out-GridView and then gets the analysis for the 
 chosen request 
 
 .NOTES
