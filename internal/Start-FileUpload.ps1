@@ -12,51 +12,20 @@ function Start-FileUpload {
     [cmdletbinding(SupportsShouldProcess = $true)]
     param([string]$Uri,
         [object]$File)
-    ## Needs the Azure.Storage dll file from the Azure.Storage Module
-    ## Dont know if I can put it in here or it needs to come from the Azure module
+        Write-Warning "There is no progress bar at present on the file upload"
     if (!(Get-Module Azure.Storage -ListAvailable)) {
         
-        Write-Verbose -Message "Getting SQLDiagAPI Module Base path"
-        try {
-            if ($PSCmdlet.ShouldProcess("SQLDiagAPI module", "Getting SQLDiagAPI module base path")) { 
-                $Base = (Get-Module -Name SQLDiagAPI).ModuleBase
-            }
-        }
-        catch {
-            Write-Warning -Message "Failed to get  SQLDiagAPI module base path - quitting"
-            break
-        }
-        Write-Verbose -Message "adding Azure Storage dll from SQLDiagAPI module"
-        try {
-            if ($PSCmdlet.ShouldProcess("Azure.Storage Dll", "Loading Assembly")) { 
-                Add-Type -Path $Base\internal\Microsoft.WindowsAzure.Storage.dll
-            }
-        }
-        catch {
-            Write-Warning -Message "Failed to load assembly from SQLDiagAPI module - quitting"
-            break
-        }
+            Write-Warning -Message "This requires the Azure.Storage Module - Please run Install-Module Azure.Storage -Scope CurrentUser to install from the PowerShell Gallery"
     }
     else {
-        Write-Verbose -Message "Getting Azure.Storage Module Base path"
+        Write-Verbose -Message "Import Azure.Storage Module"
         try {
-            if ($PSCmdlet.ShouldProcess("Azure.Storage module", "Getting Azure.Storage module base path")) { 
-                $Base = (Get-Module -Name Azure.Storage -ListAvailable).ModuleBase
+            if ($PSCmdlet.ShouldProcess("Azure.Storage Module", "Importing")) { 
+               Import-Module -Name Azure.Storage
             }
         }
         catch {
-            Write-Warning -Message "Failed to get  Azure.Storage module base path - quitting"
-            break
-        }
-        Write-Verbose -Message "adding Azure Storage dll from Azure.Storage module"
-        try {
-            if ($PSCmdlet.ShouldProcess("Azure.Storage Dll", "Loading Assemblyfrom Azure.Storage Module")) { 
-                $StorageDll = (Get-ChildItem -Path $Base -Recurse Microsoft.WindowsAzure.Storage.dll).FullName
-                Add-Type $StorageDll
-            }
-        }
-        catch {
-            Write-Warning -Message "Failed to load assembly from Azure.Storage module - quitting"
+            Write-Warning -Message "Failed to import Azure.Storage module - quitting"
             break
         }
     }
