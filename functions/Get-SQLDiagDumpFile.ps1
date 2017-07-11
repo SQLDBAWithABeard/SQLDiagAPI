@@ -20,26 +20,44 @@ and analysed with the SQL Server Diagnostic API
     DATE    07/07/2017
 #>
 function Get-SQLDiagDumpFile {
+    [cmdletbinding(SupportsShouldProcess)]
     param(
         [parameter(ValueFromPipelineByPropertyName, 
             Mandatory = $false)]
-        [ValidateScript({Test-Path -Path $_})]
+        [ValidateScript( {Test-Path -Path $_})]
         [string]$file
-        )
-    Begin{
+    )
+    Begin {
     }
-    Process{
+    Process {
         if (!$file) {
-            $DumpFile = Invoke-FilePicker
+            try {
+                Write-Verbose -Message "No file specified so invoking File Picker"
+                if ($PSCmdlet.ShouldProcess($env:COMPUTERNAME, "invoking File Picker")) { 
+                    $DumpFile = Invoke-FilePicker
+                }
+            }
+            catch {
+                Write-Warning -Message "Failed to Get File information"
+            }
         }
         else {
-            $DumpFile = Get-Item $File
-        }
-
-        [pscustomobject]@{
-            FullName = $DumpFile.FullName
-            Length     = $DumpFile.Length
+            try {
+                Write-Verbose -Message "Getting information about $File"
+                if ($PSCmdlet.ShouldProcess($File, "Getting file information")) { 
+                    $DumpFile = Get-Item $File
+                }
+            }
+            catch {
+                Write-Warning -Message "Failed to Get File information about $File"
+            }
         }
     }
-    End{}
+    End {
+        Write-Verbose -Message "Returning file object"
+        [pscustomobject]@{
+            FullName = $DumpFile.FullName
+            Length   = $DumpFile.Length
+        }
+    }
 }
