@@ -30,7 +30,7 @@ function Get-UploadURL{
         if ($PSCmdlet.ShouldProcess('SQL Analysis GetUploadURL', "UGetting the Upload URL for $File with $UploadAPIURL")) { 
             try {
                 $UploadResponse = Invoke-RestMethod -Method Post -Uri $UploadAPIURL -Headers $headers -Body $Body -ContentType "application/json"  -ErrorAction Stop
-                Write-Verbose -Message "Uploaded $File to GetUplaodURL API $UploadAPIUR"
+                Write-Verbose -Message "Got the Upload URL $UploadResponse"
             }
             catch {
                 Write-Warning -Message "Failed to upload $File to GetUploadURL API $UploadAPiURL" 
