@@ -1,3 +1,21 @@
+##############################
+#.SYNOPSIS
+#Starts the dump analysis
+#
+#
+#.PARAMETER ApiKey
+# The APIKey used to authenticate against the API. You can get one from https://ecsapi.portal.azure-api.net/
+#
+#.PARAMETER MachineGUID
+# GUID from Get-MachineGuid
+#
+#.PARAMETER RequestID
+# RequestID to start analysis for
+#
+#.NOTES
+# AUTHOR  Rob Sewell @SQLDBAWithBeard https://sqldbawithabeard.com
+#   DATE    11/07/2017
+##############################
 function Start-FileAnalysis {
     [cmdletbinding(SupportsShouldProcess = $true)]
     param(
