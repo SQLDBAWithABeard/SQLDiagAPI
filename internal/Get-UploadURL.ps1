@@ -33,10 +33,7 @@ function Get-UploadURL{
                 Write-Verbose -Message "Got the Upload URL $UploadResponse"
             }
             catch {
-                Write-Warning -Message "Failed to upload $File to GetUploadURL API $UploadAPiURL" 
-                Write-Warning -Message "UplaodAPI URL = $UploadAPIURL" 
-                Write-Warning -Message "Headers = $headers" 
-                Write-Warning -Message "Body = $Body" 
+                Write-Warning -Message "Failed to get the Upload URL from API $UploadAPiURL" 
                 break
             }
         }
