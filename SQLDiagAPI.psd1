@@ -69,13 +69,17 @@
     # NestedModules = @()
 
     # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-    FunctionsToExport = @('Get-SQLDiagRecommendations'
-        'Get-SQLDiagLatestCU'
-        'Get-SQLDiagProduct'
-        'Get-SQLDiagFeature'
-        'Get-SQLDiagFix'
-        'Get-SQLDiagSupportedRegions'
-        'Get-SQLDiagDumpFile')
+    FunctionsToExport = @('Get-SQLDiagAnalysis',
+        'Get-SQLDiagAnalysisHistory',
+        'Get-SQLDiagDumpFile',
+        'Get-SQLDiagFeature',
+        'Get-SQLDiagFix',
+        'Get-SQLDiagLatestAnalysis',
+        'Get-SQLDiagLatestCU',
+        'Get-SQLDiagProduct',
+        'Get-SQLDiagRecommendations',
+        'Get-SQLDiagSupportedRegions',
+        'Invoke-SQLDiagDumpAnalysis')
 
     # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
     CmdletsToExport   = @()
