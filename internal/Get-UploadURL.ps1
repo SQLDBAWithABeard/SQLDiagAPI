@@ -26,7 +26,7 @@ function Get-UploadURL{
             }
         } | ConvertTo-Json
 
-        Write-Verbose -Message "Getting the Upload URL for $File with GetUploadURL API $UploadAPIUR"
+        Write-Verbose -Message "Getting the Upload URL for $($File.FullName) with GetUploadURL API $UploadAPIURL"
         if ($PSCmdlet.ShouldProcess('SQL Analysis GetUploadURL', "Getting the Upload URL for $File with $UploadAPIURL")) { 
             try {
                 $UploadResponse = Invoke-RestMethod -Method Post -Uri $UploadAPIURL -Headers $headers -Body $Body -ContentType "application/json"  -ErrorAction Stop
