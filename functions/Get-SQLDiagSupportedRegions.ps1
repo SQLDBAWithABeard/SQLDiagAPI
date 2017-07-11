@@ -31,9 +31,10 @@ returns a list of supported regions for the file upload URI with the APIKey in t
 
 #>
 function Get-SQLDiagSupportedRegions {
-    [cmdletbinding()]
+    [cmdletbinding(SupportsShouldProcess = $true)]
     Param([string]$ApiKey)
     if (!$ApiKey) {
+        Write-Verbose -Message "Getting the APIKey"
         if (!(Test-Path "${env:\userprofile}\SQLDiag.Cred")) {
             Write-Warning "You have not created an XML File to hold the API Key or provided the API Key as a parameter
          You can export the key to an XML file using Get-Credential | Export-CliXml -Path `"`${env:\userprofile}\SQLDiag.Cred`"
@@ -42,9 +43,10 @@ function Get-SQLDiagSupportedRegions {
         }
         else {
             $APIKey = (Import-Clixml -Path "${env:\userprofile}\SQLDiag.Cred").GetNetworkCredential().Password
+            Write-Verbose -Message "Got the API Key $APIKey"
         }
     }
-
+    Write-Verbose -Message "Getting the Machine GUID"
     $MachineGUID = Get-MachineGUID
 
     if ($MachineGUID.length -eq 0) {
@@ -52,8 +54,16 @@ function Get-SQLDiagSupportedRegions {
         break
     }
 
+    Write-Verbose -Message "Getting the Supported Regions from the API"
     $apiUrl = "https://ecsapi.azure-api.net/DiagnosticAnalysis/SQLAnalysis/GetSupportedRegions?api-version=2017-06-01"
     $headers = @{ "Ocp-Apim-Subscription-Key" = $apiKey }
-
-    Invoke-RestMethod -Method Get -Uri $apiUrl -Headers $headers -ContentType "application/json"  -ErrorAction Stop
+    try {
+        if ($PSCmdlet.ShouldProcess($apiUrl, "Connecting to API to get Supported Regions")) { 
+            Invoke-RestMethod -Method Get -Uri $apiUrl -Headers $headers -ContentType "application/json"  -ErrorAction Stop
+        }
+    }
+    catch {
+        Write-Warning " Failed to get Supported Regions from the API $APIURL"
+    }
+    Write-Verbose -Message "Got the Supported Regions"
 }
