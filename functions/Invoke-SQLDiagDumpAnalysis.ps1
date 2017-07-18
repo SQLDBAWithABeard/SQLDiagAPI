@@ -94,7 +94,14 @@ function Invoke-SQLDiagDumpAnalysis {
         try {
             Write-Verbose "Get the UploadURL from the API"
             if ($PSCmdlet.ShouldProcess($File.FullName, "Get the UploadURL from the API")) { 
-                $UploadResponse = Get-UploadURL -APIKey $APIKey -MachineGUID $MachineGUID -File $File -Region $Region -Email $Email 
+                $getUploadURLSplat = @{
+                    File = $File
+                    MachineGUID = $MachineGUID
+                    Region = $Region
+                    Email = $Email
+                    APIKey = $APIKey
+                }
+                $UploadResponse = Get-UploadURL @getUploadURLSplat 
                 Write-Verbose "Got the UploadURL $($UploadResponse.UploadURL) for RequestID $($UploadResponse.RequestID) from the API"
             }
         }
@@ -107,7 +114,11 @@ function Invoke-SQLDiagDumpAnalysis {
         try {
             Write-verbose -Message "Upload the File to storage for analysis"
             if ($PSCmdlet.ShouldProcess($File.FullName, "Upload the File to storage for analysis")) { 
-                Start-FileUpload -Uri $UploadURL -File $File
+                $startFileUploadSplat = @{
+                    Uri = $UploadURL
+                    File = $File
+                }
+                Start-FileUpload @startFileUploadSplat
             }
         }
         catch {
@@ -118,7 +129,12 @@ function Invoke-SQLDiagDumpAnalysis {
         try {
             if ($PSCmdlet.ShouldProcess($File.FullName, "Intiating Analysis of Dump File")) { 
             
-                $response = Start-FileAnalysis -APIKey $ApiKey -MachineGUID $MachineGUID -RequestID $RequestID
+                $startFileAnalysisSplat = @{
+                    MachineGUID = $MachineGUID
+                    RequestID = $RequestID
+                    APIKey = $ApiKey
+                }
+                $response = Start-FileAnalysis @startFileAnalysisSplat
             }
         }
         catch {
