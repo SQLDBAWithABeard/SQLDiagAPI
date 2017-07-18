@@ -59,7 +59,14 @@ function Get-SQLDiagRecommendations {
     $headers = @{ "Ocp-Apim-Subscription-Key" = $apiKey }
     try {
         if ($PSCmdlet.ShouldProcess($apiUrl, "Connecting to API to get Latest CUs")) { 
-    Invoke-RestMethod -Method Get -Uri $apiUrl -Headers $headers -ContentType "application/json"  -ErrorAction Stop
+    $invokeRestMethodSplat = @{
+        Method = 'Get'
+        Uri = $apiUrl
+        ContentType = "application/json"
+        Headers = $headers
+        ErrorAction = 'Stop'
+    }
+    Invoke-RestMethod @invokeRestMethodSplat
         }
     }
     catch {
