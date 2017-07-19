@@ -10,7 +10,14 @@
 ##############################
 function Start-FileUpload {
     [cmdletbinding(SupportsShouldProcess = $true)]
-    param([string]$Uri,
+    param(
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $false)]
+            [string]$Uri,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $false)]
         [object]$File)
         Write-Warning "There is no progress bar at present on the file upload"
     if (!(Get-Module Azure.Storage -ListAvailable)) {
