@@ -6,10 +6,25 @@
 function Get-UploadURL{
     [cmdletbinding(SupportsShouldProcess = $true)]
     param( 
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $true)]
         [string]$APIKey,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $true)]
         [string]$MachineGUID,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $true)]
         [object]$File,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $true)]
         [string]$Region,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $false)]
         [string]$Email
         )
             $size = $File.Length/1MB
