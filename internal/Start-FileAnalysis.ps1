@@ -19,8 +19,17 @@
 function Start-FileAnalysis {
     [cmdletbinding(SupportsShouldProcess = $true)]
     param(
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $false)]
         [string]$ApiKey,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $false)]
         [string]$MachineGUID,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $false)]
         [string]$RequestID
     )
     Begin {
