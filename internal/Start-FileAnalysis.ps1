@@ -19,8 +19,17 @@
 function Start-FileAnalysis {
     [cmdletbinding(SupportsShouldProcess = $true)]
     param(
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $false)]
         [string]$ApiKey,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $false)]
         [string]$MachineGUID,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $false)]
         [string]$RequestID
     )
     Begin {
@@ -37,7 +46,15 @@ function Start-FileAnalysis {
         Write-Verbose -Message "Intiating Analysis of Dump File $File"
         if ($PSCmdlet.ShouldProcess('SQL Analysis Initiate Analysis', "Intiating Analysis of Dump File $File with $InitiateAnalysisAPIURL")) { 
             try {
-                $response = Invoke-RestMethod -Method Post -Uri $InitiateAnalysisAPIURL -Headers $headers -Body $Body -ContentType "application/json"  -ErrorAction Stop
+                $invokeRestMethodSplat = @{
+                    Body = $Body
+                    Uri = $InitiateAnalysisAPIURL
+                    Method = 'Post'
+                    Headers = $headers
+                    ErrorAction = 'Stop'
+                    ContentType = "application/json"
+                }
+                $response = Invoke-RestMethod @invokeRestMethodSplat
                 Write-Verbose -Message "Intiated Analysis of Dump File $File"
             }
             catch {

@@ -59,7 +59,14 @@ function Get-SQLDiagSupportedRegions {
     $headers = @{ "Ocp-Apim-Subscription-Key" = $apiKey }
     try {
         if ($PSCmdlet.ShouldProcess($apiUrl, "Connecting to API to get Supported Regions")) { 
-            Invoke-RestMethod -Method Get -Uri $apiUrl -Headers $headers -ContentType "application/json"  -ErrorAction Stop
+            $invokeRestMethodSplat = @{
+                Uri = $apiUrl
+                ContentType = "application/json"
+                Method = 'Get'
+                Headers = $headers
+                ErrorAction = 'Stop'
+            }
+            Invoke-RestMethod @invokeRestMethodSplat
         }
     }
     catch {

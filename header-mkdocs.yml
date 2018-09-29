@@ -1,0 +1,8 @@
+site_name: SQL Diag API
+repo_url: https://github.com/SQLDBAWithABeard/SQLDiagAPI 
+site_author: The Beard
+edit_uri: edit/master/docs/
+theme: readthedocs
+copyright: "MIT license"
+pages:
+  - Home: index.md

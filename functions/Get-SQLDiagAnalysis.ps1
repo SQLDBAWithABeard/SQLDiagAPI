@@ -72,7 +72,15 @@ function Get-SQLDiagAnalysis {
         try {
             Write-Verbose -Message "Getting the Analysis from the API for RequestID $RequestID"
             if ($PSCmdlet.ShouldProcess('Analysis Detail APi', "Getting the Analysis History from the API")) { 
-                $Response = Invoke-RestMethod -Method Post -Uri $AnalysisURL -Headers $headers -Body $Body -ContentType "application/json"  -ErrorAction Stop
+                $invokeRestMethodSplat = @{
+                    ContentType = "application/json"
+                    ErrorAction = 'Stop'
+                    Headers = $headers
+                    Method = 'Post'
+                    Body = $Body
+                    Uri = $AnalysisURL
+                }
+                $Response = Invoke-RestMethod @invokeRestMethodSplat
             } 
         }
         catch {

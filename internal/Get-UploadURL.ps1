@@ -6,10 +6,25 @@
 function Get-UploadURL{
     [cmdletbinding(SupportsShouldProcess = $true)]
     param( 
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $true)]
         [string]$APIKey,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $true)]
         [string]$MachineGUID,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $true)]
         [object]$File,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $true)]
         [string]$Region,
+        [parameter(ValueFromPipelineByPropertyName = $true, 
+            ValueFromPipeline = $true,
+            Mandatory = $false)]
         [string]$Email
         )
             $size = $File.Length/1MB
@@ -29,7 +44,15 @@ function Get-UploadURL{
         Write-Verbose -Message "Getting the Upload URL for $($File.FullName) with GetUploadURL API $UploadAPIURL"
         if ($PSCmdlet.ShouldProcess('SQL Analysis GetUploadURL', "Getting the Upload URL for $File with $UploadAPIURL")) { 
             try {
-                $UploadResponse = Invoke-RestMethod -Method Post -Uri $UploadAPIURL -Headers $headers -Body $Body -ContentType "application/json"  -ErrorAction Stop
+                $invokeRestMethodSplat = @{
+                    Uri = $UploadAPIURL
+                    ContentType = "application/json"
+                    Headers = $headers
+                    Method = 'Post'
+                    ErrorAction = 'Stop'
+                    Body = $Body
+                }
+                $UploadResponse = Invoke-RestMethod @invokeRestMethodSplat
                 Write-Verbose -Message "Got the Upload URL $UploadResponse"
             }
             catch {

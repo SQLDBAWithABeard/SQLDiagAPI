@@ -122,7 +122,14 @@ put a swithc here for the inputs to be abel to combine them
         try {
             Write-Verbose -Message "Getting the Analysis History from the API"
             if ($PSCmdlet.ShouldProcess('Analysis History APi', "Getting the Analysis History from the API")) { 
-                $response = Invoke-RestMethod -Method Get -Uri $AnalysisHistoryUrl -Headers $headers -ContentType "application/json"  -ErrorAction Stop
+                $invokeRestMethodSplat = @{
+                    ContentType = "application/json"
+                    Headers = $headers
+                    Method = 'Get'
+                    Uri = $AnalysisHistoryUrl
+                    ErrorAction = 'Stop'
+                }
+                $response = Invoke-RestMethod @invokeRestMethodSplat
             } 
         }
         catch {
@@ -153,7 +160,15 @@ put a swithc here for the inputs to be abel to combine them
             }
             elseif ($Since -eq 'This Month') {
                 $Today = [datetime]::Today
-                $Date = Get-Date -Year $today.Year -Month $today.Month -Day 1 -Hour 0 -Minute 0 -Second 0
+                $getDateSplat = @{
+                    Year = $today.Year
+                    Hour = 0
+                    Month = $today.Month
+                    Second = 0
+                    Day = 1
+                    Minute = 0
+                }
+                $Date = Get-Date @getDateSplat
             }
             Write-Verbose -Message "Filtering By Date since $Date"
             $response | Where-Object {[datetime]$_.CreateTime -gt $Date}
