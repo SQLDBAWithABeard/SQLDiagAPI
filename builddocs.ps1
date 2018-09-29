@@ -9,6 +9,20 @@ $ChangeLog = "$ProjectRoot\docs\ChangeLog.md"
 $YMLtext = (Get-Content "$ProjectRoot\header-mkdocs.yml") -join "`n"
 $YMLtext = "$YMLtext`n"
 
+$parameters = @{
+    Path = $ReleaseNotes
+    ErrorAction = 'SilentlyContinue'
+}
+$ReleaseText = (Get-Content @parameters) -join "`n"
+if ($ReleaseText) {
+    $ReleaseText | Set-Content "$ProjectRoot\docs\RELEASE.md"
+    $YMLText = "$YMLtext  - Realse Notes: RELEASE.md`n"
+}
+if ((Test-Path -Path $ChangeLog)) {
+    $YMLText = "$YMLtext  - Change Log: ChangeLog.md`n"
+}
+$YMLText = "$YMLtext  - Functions:`n"
+
 $Params = @{
     Module       = 'SQLDiagAPI'
     Force        = $true

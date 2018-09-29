@@ -6,6 +6,7 @@ theme: readthedocs
 copyright: "MIT license"
 pages:
   - Home: index.md
+  - Functions:
     - Get-SQLDiagAnalysis: functions/Get-SQLDiagAnalysis.md
     - Get-SQLDiagAnalysisHistory: functions/Get-SQLDiagAnalysisHistory.md
     - Get-SQLDiagDumpFile: functions/Get-SQLDiagDumpFile.md
